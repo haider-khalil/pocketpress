@@ -25,7 +25,7 @@
 <div class="wrap">
 <header class="top">
   <a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><rect x="7" y="5" width="18" height="3.2" rx="1.2" fill="var(--accent-ink)"/><rect x="7" y="23.8" width="18" height="3.2" rx="1.2" fill="var(--accent-ink)"/><path d="M10.5 11.5h11v9h-11z" fill="#fff" stroke="var(--accent-ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 14.5h6M13 17.5h4" stroke="var(--accent-ink)" stroke-width="1.4" stroke-linecap="round"/></svg><span dir="ltr">PocketPress</span></a>
-  <nav aria-label="Main"><a class="hide-sm" href="../compress-image-to-100kb/">Image to 100 KB</a><a class="hide-sm" href="../compress-pdf/">Compress PDF</a><a class="hide-sm" href="../jpg-to-pdf/">JPG to PDF</a><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
+  <nav aria-label="Main"><a class="hide-sm" href="../compress-image-to-100kb/">Image to 100 KB</a><a class="hide-sm" href="../compress-pdf/">Compress PDF</a><a class="hide-sm" href="../jpg-to-pdf/">JPG to PDF</a><a class="hide-sm" href="../app/">Get the app</a><button class="btn sm primary" type="button" data-install hidden data-i18n="install">Install app</button><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
 </header>
 
   <section class="hero">
@@ -40,13 +40,21 @@
     <aside class="panel" aria-label="Settings">
       <div class="fields">
         <span class="label" data-i18n="goal">Goal</span>
-        <div class="seg" id="presets">
+        <div class="seg seg3" id="presets">
           <button type="button" data-preset="small" aria-pressed="false"><span data-i18n="p_small">Smallest</span><small data-i18n="p_small_s">Max shrink</small></button>
-          <button type="button" data-preset="balanced" aria-pressed="true"><span data-i18n="p_bal">Balanced</span><small data-i18n="p_bal_s">Good for most</small></button>
+          <button type="button" data-preset="balanced" aria-pressed="true"><span data-i18n="p_bal">Balanced</span><small data-i18n="p_bal_s">Recommended</small></button>
           <button type="button" data-preset="quality" aria-pressed="false"><span data-i18n="p_q">Best quality</span><small data-i18n="p_q_s">Light touch</small></button>
-          <button type="button" data-preset="custom" aria-pressed="false"><span data-i18n="p_c">Custom</span><small data-i18n="p_c_s">Your settings</small></button>
         </div>
+        <small class="hint" id="customNote" hidden data-i18n="custom_note">Using your own choices from More settings.</small>
       </div>
+      <div class="fields">
+        <span class="label" data-i18n="limit">Size limit for photos</span>
+        <div class="chips" id="limitChips"><button class="chip" type="button" data-kb="0" data-i18n="no_limit">No limit</button><button class="chip" type="button" data-kb="20">20 KB</button><button class="chip" type="button" data-kb="50">50 KB</button><button class="chip" type="button" data-kb="100">100 KB</button><button class="chip" type="button" data-kb="200">200 KB</button><button class="chip" type="button" data-kb="500">500 KB</button><button class="chip" type="button" data-kb="1024">1 MB</button></div>
+        <small class="hint" data-i18n="limit_hint">Pick one when a form says "maximum 100 KB".</small>
+      </div>
+      <details class="more" id="more">
+      <summary data-i18n="more">More settings</summary>
+      <div class="fields more-body">
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" type="button" aria-selected="true" data-tab="img" id="tab-img" data-i18n="tab_img">Images</button>
         <button class="tab" role="tab" type="button" aria-selected="false" data-tab="pdf" id="tab-pdf" data-i18n="tab_pdf">PDF</button>
@@ -91,10 +99,8 @@
           </div>
         </div>
         <div class="field">
-          <label class="check"><input type="checkbox" id="tgtOn"> <span><b data-i18n="tgt">Fit under a file size</b><br><small data-i18n="tgt_s">For forms and portals with upload limits. Adjusts quality and size automatically.</small></span></label>
-          <div class="row" id="tgtRow" hidden><input type="number" id="tgtV" value="100" min="5" aria-label="Size limit in KB"><small>KB</small>
-            <div class="chips" id="tgtChips"><button class="chip" type="button" data-kb="20">20 KB</button><button class="chip" type="button" data-kb="50">50 KB</button><button class="chip" type="button" data-kb="100">100 KB</button><button class="chip" type="button" data-kb="200">200 KB</button><button class="chip" type="button" data-kb="500">500 KB</button><button class="chip" type="button" data-kb="1024">1 MB</button></div>
-          </div>
+          <label class="check"><input type="checkbox" id="tgtOn"> <span><b data-i18n="tgt">Fit under a file size</b><br><small data-i18n="tgt_s">Type any limit, for example 30 or 150 KB.</small></span></label>
+          <div class="row" id="tgtRow" hidden><input type="number" id="tgtV" value="100" min="5" aria-label="Size limit in KB"><small>KB</small></div>
         </div>
         <small class="hint" data-i18n="meta_hint">Photo location data and other hidden metadata are removed automatically.</small>
       </div>
@@ -120,6 +126,9 @@
           <div class="row" style="flex-wrap:nowrap"><input type="range" id="pdfQ" min="20" max="95" value="68" aria-label="PDF image quality"><span class="rangeval" id="pdfQv">68</span></div>
         </div>
         <label class="check" data-strong><input type="checkbox" id="pdfGray"> <span><span data-i18n="gray">Black &amp; white (grayscale)</span><br><small data-i18n="gray_s">Great for scanned forms, CNIC copies and receipts.</small></span></label>
+        <label class="field"><span data-i18n="pg_label">Page size for Images → PDF</span>
+          <select id="pageSize"><option value="a4" data-i18n="pg_a4">A4 pages</option><option value="letter" data-i18n="pg_letter">Letter pages</option><option value="fit" data-i18n="pg_fit">Page = image size</option></select>
+        </label>
       </div>
 
       <div class="fields" data-pane="office" hidden>
@@ -133,8 +142,9 @@
         <small class="hint" data-i18n="other_hint">Other file types are packed into a compressed .zip.</small>
       </div>
 
-      <div class="divider"></div>
-      <button class="btn primary" id="rerun" type="button" data-i18n="apply">Apply settings to all files</button>
+      </div>
+      </details>
+      <small class="hint" data-i18n="auto_hint">Changes apply to your files straight away.</small>
     </aside>
 
     <main class="fields" style="gap:14px">
@@ -154,7 +164,6 @@
         <div class="row">
           <button class="btn" id="saveAll" type="button" disabled data-i18n="save_all">Download all (.zip)</button>
           <button class="btn" id="toPdf" type="button" disabled data-i18n="to_pdf">Images → one PDF</button>
-          <select id="pageSize" aria-label="PDF page size"><option value="a4" data-i18n="pg_a4">A4 pages</option><option value="letter" data-i18n="pg_letter">Letter pages</option><option value="fit" data-i18n="pg_fit">Page = image size</option></select>
           <button class="btn" id="mergePdf" type="button" disabled data-i18n="merge">Merge PDFs</button>
         </div>
         <button class="btn ghost sm" id="clearAll" type="button" data-i18n="clear">Clear list</button>
@@ -175,10 +184,10 @@
     <div class="prose"><h2>How to use it</h2><ol><li>Add two or more PDFs, in the order you want them.</li><li>Press Merge PDFs.</li><li>The merged file appears at the bottom of the list. Download it.</li></ol></div>
     <div class="prose faq"><h2>Questions</h2><details><summary>Can I compress and merge together?</summary><p>Yes. Files that have already been compressed are merged using their smaller compressed version.</p></details><details><summary data-ur="کیا میری فائلیں کہیں اپ لوڈ ہوتی ہیں؟">Are my files uploaded anywhere?</summary><p data-ur="نہیں۔ سب کچھ آپ کے اپنے فون یا کمپیوٹر کے براؤزر میں ہوتا ہے۔ فائلیں کسی سرور پر نہیں جاتیں۔">No. Everything happens inside your browser on your own phone or computer. Your files are never sent to a server, so private documents stay private.</p></details><details><summary data-ur="کیا یہ مفت ہے؟">Is PocketPress free?</summary><p data-ur="جی ہاں، بالکل مفت۔ نہ سائن اپ، نہ واٹر مارک۔">Yes, completely free with no sign-up and no watermark.</p></details><details><summary data-ur="کیا یہ موبائل پر چلتا ہے؟">Does it work on my phone?</summary><p data-ur="جی ہاں۔ اینڈرائیڈ، آئی فون، ونڈوز اور میک پر چلتا ہے۔ براؤزر مینو سے انسٹال کر کے آف لائن بھی استعمال کر سکتے ہیں۔">Yes. It works in Chrome, Safari, Edge and Firefox on Android, iPhone, Windows and Mac. You can also install it from your browser menu and use it offline.</p></details></div>
   </section>
-  <section class="tools" aria-labelledby="tl"><h2 id="tl">All tools</h2><ul><li><a href="../">All tools</a></li><li><a href="../compress-image/">Compress image</a></li><li><a href="../compress-image-to-100kb/">Image to 100 KB</a></li><li><a href="../compress-image-to-50kb/">Image to 50 KB</a></li><li><a href="../compress-image-to-20kb/">Image to 20 KB</a></li><li><a href="../compress-image-to-200kb/">Image to 200 KB</a></li><li><a href="../photo-for-online-form/">Photo for forms</a></li><li><a href="../resize-image/">Resize image</a></li><li><a href="../heic-to-jpg/">HEIC to JPG</a></li><li><a href="../png-to-jpg/">PNG to JPG</a></li><li><a href="../compress-pdf/">Compress PDF</a></li><li><a href="../merge-pdf/" aria-current="page">Merge PDF</a></li><li><a href="../jpg-to-pdf/">JPG to PDF</a></li><li><a href="../compress-word/">Compress Word</a></li><li><a href="../compress-powerpoint/">Compress PowerPoint</a></li><li><a href="../compress-excel/">Compress Excel</a></li></ul></section>
+  <section class="tools" aria-labelledby="tl"><h2 id="tl">All tools</h2><ul><li><a href="../">All-in-one</a></li><li><a href="../compress-image/">Compress image</a></li><li><a href="../compress-image-to-100kb/">Image to 100 KB</a></li><li><a href="../compress-image-to-50kb/">Image to 50 KB</a></li><li><a href="../compress-image-to-20kb/">Image to 20 KB</a></li><li><a href="../compress-image-to-200kb/">Image to 200 KB</a></li><li><a href="../photo-for-online-form/">Photo for forms</a></li><li><a href="../resize-image/">Resize image</a></li><li><a href="../heic-to-jpg/">HEIC to JPG</a></li><li><a href="../png-to-jpg/">PNG to JPG</a></li><li><a href="../compress-pdf/">Compress PDF</a></li><li><a href="../merge-pdf/" aria-current="page">Merge PDF</a></li><li><a href="../jpg-to-pdf/">JPG to PDF</a></li><li><a href="../compress-word/">Compress Word</a></li><li><a href="../compress-powerpoint/">Compress PowerPoint</a></li><li><a href="../compress-excel/">Compress Excel</a></li></ul></section>
 <footer>
   <span>© 2026 PocketPress · Your files never leave your device.</span>
-  <nav aria-label="Site"><a href="../about/">About</a><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a><a href="https://github.com/haider-khalil/pocketpress/issues">Report a problem</a><a href="https://github.com/haider-khalil/pocketpress">Source code</a></nav>
+  <nav aria-label="Site"><a href="../app/">Get the app</a><a href="../about/">About</a><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a><a href="https://github.com/haider-khalil/pocketpress/issues">Report a problem</a><a href="https://github.com/haider-khalil/pocketpress">Source code</a></nav>
 </footer>
 </div>
 <div class="toast" id="toast" hidden></div>

@@ -16,7 +16,10 @@ Live site: https://haider-khalil.github.io/pocketpress/
 | Merge PDF, JPG → PDF | Combine PDFs, or turn photos into one PDF with A4 / Letter pages |
 | Word, Excel, PowerPoint | Recompresses pictures inside .docx / .xlsx / .pptx; text and layout untouched |
 | Anything else | Packed into a compressed .zip |
-| Extras | Before/after compare slider, Download all as .zip, Share on mobile, English / اردو, works offline (installable app) |
+| Simple screen | Pick a goal (Smallest / Balanced / Best quality) and an optional size limit; everything else is under **More settings**. Changes apply straight away |
+| Installable app | **Install app** button (Android, Windows, Mac) and iPhone steps on the `app/` page. Works offline, opens with its own icon and window |
+| Open files from outside | Android: Share a photo or PDF from the Gallery to PocketPress. Windows/Mac: right-click a file → Open with → PocketPress |
+| Extras | Before/after compare slider, Download all as .zip, Share on mobile, English / اردو |
 
 ## Project layout
 
@@ -59,6 +62,10 @@ Then run `python3 build.py`.
 2. In this repo: **Settings → Pages → Custom domain**, enter it, and follow GitHub's DNS instructions.
 3. In `build.py` set `SITE_URL = "https://yourdomain"` and `BASE_PATH = "/"`, run `python3 build.py`, commit and push.
 4. Add the site to [Google Search Console](https://search.google.com/search-console) and submit `sitemap.xml`.
+
+## Example photo
+
+The coffee photo shown on first visit (`assets/example-coffee.jpg`) is by Rachel Michetti, courtesy of Pikolo Espresso Bar, released under CC0 (no copyright restrictions). It ships with the scikit-image project. To use your own, replace that file with any JPG and run `python3 build.py`.
 
 ## Licenses
 

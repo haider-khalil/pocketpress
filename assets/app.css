@@ -174,3 +174,25 @@ footer a:hover{text-decoration:underline}
 .doc h2{margin-top:10px}
 
 @media (prefers-reduced-motion:reduce){.spin{animation:none}.bar i,.drop{transition:none}}
+
+/* ---- simple mode ---- */
+.seg3{grid-template-columns:repeat(3,1fr)}
+.seg3 button{text-align:center;padding:10px 6px}
+#limitChips .chip{font-size:13px;padding:6px 11px}
+details.more{border-top:1px solid var(--line);padding-top:12px}
+details.more > summary{cursor:pointer;font-weight:700;font-size:14.5px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0}
+details.more > summary::-webkit-details-marker{display:none}
+details.more > summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .15s}
+details.more[open] > summary::after{transform:rotate(-135deg) translateY(-1px)}
+.more-body{padding-top:12px;gap:16px}
+.drop{padding:34px 16px}
+.drop strong{font-size:21px}
+.toolbar .row .btn[hidden]{display:none!important}
+
+/* ---- app page ---- */
+.doc:has(.appgrid){max-width:1060px}
+.appgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.appcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.appcard h2{font-size:18px}
+.appcard ol{margin:0;padding-inline-start:20px;display:grid;gap:6px}
+.appcard .hint{margin:0}

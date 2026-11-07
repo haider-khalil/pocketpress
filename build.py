@@ -30,13 +30,13 @@ TODAY = datetime.date.today().isoformat()
 # and has its own title, description and help text for search engines.
 # ----------------------------------------------------------------------------
 TOOLS = [
-  dict(path="", nav="All tools", tab="img",
+  dict(path="", nav="All-in-one", tab="img",
        title="PocketPress — Free File Compressor for Images, PDF & Word",
        desc="Compress images, PDFs, Word, Excel and PowerPoint files for free. Resize photos, fit images under 100 KB, convert JPG to PDF. Files never leave your device.",
        h1='<span dir="ltr">Pocket<span class="press">Press</span></span>', h1_ur='<span dir="ltr">Pocket<span class="press">Press</span></span>',
        intro="Shrink, resize and convert images, PDFs and Office files. Fit a photo under an upload limit, slim a scanned PDF, or turn photos into one PDF.",
        intro_ur="تصاویر، پی ڈی ایف اور آفس فائلوں کا سائز کم کریں۔ تصویر کو اپ لوڈ کی حد کے اندر لائیں، اسکین شدہ PDF چھوٹی کریں، یا تصاویر سے ایک PDF بنائیں۔",
-       steps=["Drop your files in the box, or tap it to choose them.", "Pick a goal: Smallest, Balanced or Best quality. Fine-tune in the Images, PDF and Office tabs if you like.", "Press Download on each file, or Download all to get one .zip."],
+       steps=["Drop your files in the box, or tap it to choose them.", "Pick a goal: Smallest, Balanced or Best quality. Need a photo under 100 KB? Tap the size limit. Everything else is under More settings.", "Press Download on each file, or Download all to get one .zip."],
        faq=[("What file types can I compress?", "JPG, PNG, WebP, GIF, BMP, iPhone HEIC photos, PDF, Word (.docx), Excel (.xlsx) and PowerPoint (.pptx). Any other file can be packed into a compressed .zip.")]),
   dict(path="compress-image", nav="Compress image", tab="img",
        title="Compress Image Online Free — JPG, PNG, WebP | PocketPress",
@@ -44,7 +44,7 @@ TOOLS = [
        h1="Compress images", h1_ur="تصویر کا سائز کم کریں",
        intro="Make photos smaller without a visible loss in quality. Works with JPG, PNG, WebP, GIF, BMP and iPhone HEIC.",
        intro_ur="معیار میں نمایاں کمی کے بغیر تصاویر چھوٹی کریں۔ JPG، PNG، WebP اور آئی فون HEIC کے ساتھ کام کرتا ہے۔",
-       steps=["Add your photos.", "Keep Balanced for everyday use, or pick Smallest for the tiniest files.", "Tap the thumbnail to compare before and after, then download."],
+       steps=["Add your photos.", "Keep Balanced for everyday use, or pick Smallest for the tiniest files. Your files update as soon as you change a setting.", "Tap the thumbnail to compare before and after, then download."],
        faq=[("Will my photo look worse?", "At the Balanced setting most people cannot see a difference. Tap the thumbnail after compressing to compare the two side by side.")]),
   dict(path="compress-image-to-100kb", nav="Image to 100 KB", tab="img", set=dict(imgFormat="image/jpeg", tgt=True, tgtV=100, rsMode="long", rsLongV=1600),
        title="Compress Image to 100KB Online Free | PocketPress",
@@ -52,7 +52,7 @@ TOOLS = [
        h1="Compress image to 100 KB", h1_ur="تصویر کو 100 KB تک کم کریں",
        intro="Many online forms only accept photos under 100 KB. Add your picture and it is automatically adjusted to fit.",
        intro_ur="بہت سے آن لائن فارمز صرف 100 KB سے کم تصویر قبول کرتے ہیں۔ تصویر شامل کریں، یہ خود بخود حد کے اندر آ جائے گی۔",
-       steps=["Add your photo. The 100 KB limit is already switched on.", "Need a different limit? Change the number or tap 50 KB, 200 KB or 500 KB.", "Download the result and upload it to your form."],
+       steps=["Add your photo. The 100 KB limit is already selected.", "Need a different limit? Tap 50 KB, 200 KB or 500 KB, or type any number under More settings.", "Download the result and upload it to your form."],
        faq=[("Why is my file slightly under 100 KB, not exactly 100?", "The tool finds the best quality that stays under your limit, so the file is always a little below it. That is what forms check for.")]),
   dict(path="compress-image-to-50kb", nav="Image to 50 KB", tab="img", set=dict(imgFormat="image/jpeg", tgt=True, tgtV=50, rsMode="long", rsLongV=1200),
        title="Compress Image to 50KB Online Free | PocketPress",
@@ -60,15 +60,15 @@ TOOLS = [
        h1="Compress image to 50 KB", h1_ur="تصویر کو 50 KB تک کم کریں",
        intro="For applications that ask for a photo or signature under 50 KB. Your image is resized and compressed to fit.",
        intro_ur="ان درخواستوں کے لیے جو 50 KB سے کم تصویر یا دستخط مانگتی ہیں۔",
-       steps=["Add your image.", "The 50 KB limit is on. Adjust it if your form asks for something else.", "Download and upload to your form."],
-       faq=[("Can I get it even smaller?", "Yes. Type a smaller number such as 20 next to KB. Very small limits also reduce the picture's dimensions.")]),
+       steps=["Add your image.", "The 50 KB limit is already selected. Tap another size if your form asks for something else.", "Download and upload to your form."],
+       faq=[("Can I get it even smaller?", "Yes. Tap 20 KB, or type any number under More settings. Very small limits also reduce the picture's dimensions.")]),
   dict(path="compress-image-to-20kb", nav="Image to 20 KB", tab="img", set=dict(imgFormat="image/jpeg", tgt=True, tgtV=20, rsMode="long", rsLongV=800),
        title="Compress Image to 20KB Online Free | PocketPress",
        desc="Shrink a photo or signature to under 20 KB for strict upload limits. Free, private and instant.",
        h1="Compress image to 20 KB", h1_ur="تصویر کو 20 KB تک کم کریں",
        intro="For the strictest upload limits, usually for signatures and thumb impressions.",
        intro_ur="سخت ترین اپ لوڈ حد کے لیے، عموماً دستخط اور انگوٹھے کے نشان کے لیے۔",
-       steps=["Add your image.", "The 20 KB limit is on.", "Download the result."],
+       steps=["Add your image.", "The 20 KB limit is already selected.", "Download the result."],
        faq=[("My signature looks blurry at 20 KB", "Scan it on plain white paper with dark ink and crop close to the signature before adding it. Less empty space means more detail fits in 20 KB.")]),
   dict(path="compress-image-to-200kb", nav="Image to 200 KB", tab="img", set=dict(imgFormat="image/jpeg", tgt=True, tgtV=200, rsMode="long", rsLongV=2000),
        title="Compress Image to 200KB Online Free | PocketPress",
@@ -76,15 +76,15 @@ TOOLS = [
        h1="Compress image to 200 KB", h1_ur="تصویر کو 200 KB تک کم کریں",
        intro="A good limit for ID card scans, certificates and document photos that still need to be readable.",
        intro_ur="شناختی کارڈ، سرٹیفکیٹ اور دستاویز کی تصاویر کے لیے مناسب حد جو پڑھنے کے قابل رہیں۔",
-       steps=["Add your scan or photo.", "The 200 KB limit is on.", "Download and upload."],
+       steps=["Add your scan or photo.", "The 200 KB limit is already selected.", "Download and upload."],
        faq=[("Will text on my document stay readable?", "Usually yes at 200 KB. Use the Compare button to zoom in and check before you upload.")]),
-  dict(path="photo-for-online-form", nav="Photo for forms", tab="img", quick="photo",
+  dict(path="photo-for-online-form", nav="Photo for forms", tab="img", quick="photo", more=True, 
        title="Resize Photo for Online Form — Under 100KB | PocketPress",
        desc="Resize and compress your photo for job, admission and government application forms. One tap presets for profile photo, signature and ID scans.",
        h1="Photo, signature and ID for online forms", h1_ur="آن لائن فارم کے لیے تصویر، دستخط اور شناختی کارڈ",
        intro="One-tap sizes for the uploads most forms ask for: profile photo, signature and ID card scan.",
        intro_ur="زیادہ تر فارمز کے لیے ایک ٹیپ میں سائز: پروفائل تصویر، دستخط اور شناختی کارڈ اسکین۔",
-       steps=["Tap the quick size that matches your form: Profile photo, Signature or ID / CNIC scan.", "Add your image.", "Check your form's exact limit, adjust the KB number if needed, then download."],
+       steps=["Under More settings, tap the quick size that matches your form: Profile photo, Signature or ID / CNIC scan.", "Add your image.", "Check your form's exact limit, adjust the KB number if needed, then download."],
        faq=[("What size does my form need?", "Every form is different. The quick sizes cover the most common limits, but always read the instructions on your form and change the KB number to match.")]),
   dict(path="resize-image", nav="Resize image", tab="img", set=dict(rsMode="exact", rsW=1080, rsH=1080, rsFit=True),
        title="Resize Image Online Free — Change Width & Height | PocketPress",
@@ -92,7 +92,7 @@ TOOLS = [
        h1="Resize images", h1_ur="تصویر کا سائز تبدیل کریں",
        intro="Change a picture's width and height in pixels, by percentage, or by limiting its longest side.",
        intro_ur="تصویر کی چوڑائی اور اونچائی پکسل، فیصد یا لمبی سائیڈ کی حد سے تبدیل کریں۔",
-       steps=["Choose how to resize under Resize.", "Enter the size you need. Keep proportions stops the picture from stretching.", "Add your images and download."],
+       steps=["Open More settings and choose how to resize under Resize.", "Enter the size you need. Keep proportions stops the picture from stretching.", "Add your images and download."],
        faq=[("Can I resize many photos at once?", "Yes. Add as many as you like and they all use the same settings. Download all gives you one .zip.")]),
   dict(path="heic-to-jpg", nav="HEIC to JPG", tab="img", set=dict(imgFormat="image/jpeg", rsMode="none", imgQ=88),
        title="HEIC to JPG Converter Online Free | PocketPress",
@@ -110,13 +110,13 @@ TOOLS = [
        intro_ur="اسکرین شاٹس اور PNG تصاویر اکثر ضرورت سے بڑی ہوتی ہیں۔ JPG انہیں بہت چھوٹا کر دیتا ہے۔",
        steps=["Add your PNG files.", "They are saved as JPG at high quality.", "Download."],
        faq=[("What happens to transparent backgrounds?", "JPG cannot store transparency, so transparent areas become white. Choose WebP or PNG as the output format to keep transparency.")]),
-  dict(path="compress-pdf", nav="Compress PDF", tab="pdf", example=False,
+  dict(path="compress-pdf", nav="Compress PDF", tab="pdf", example=False, more=True, 
        title="Compress PDF Online Free — Reduce PDF File Size | PocketPress",
        desc="Reduce PDF file size for email and online forms. Strong mode for scanned documents, light mode keeps text selectable. Free, no upload.",
        h1="Compress PDF", h1_ur="PDF کا سائز کم کریں",
        intro="Make PDFs small enough for email and upload forms. Strong mode works best on scanned documents.",
        intro_ur="PDF کو ای میل اور اپ لوڈ فارمز کے لیے چھوٹا کریں۔ اسکین شدہ دستاویزات پر طاقتور موڈ بہترین ہے۔",
-       steps=["Add your PDF.", "Strong mode gives the biggest savings. Turn on Black & white for scanned forms and ID copies.", "Use Light mode instead if you need to keep text selectable."],
+       steps=["Add your PDF.", "Strong mode gives the biggest savings. Turn on Black & white for scanned forms and ID copies.", "Use Light mode instead if you need to keep text selectable. Both are under More settings."],
        faq=[("Why can't I select text after compressing?", "Strong mode redraws each page as an image, which is what makes scans so much smaller. Choose Light mode to keep the text, with smaller savings."),
             ("My PDF is password-protected", "Remove the password first in the app you normally use to open it, then add it here.")]),
   dict(path="merge-pdf", nav="Merge PDF", tab="pdf", spot="#mergePdf", example=False,
@@ -127,13 +127,13 @@ TOOLS = [
        intro_ur="کئی PDF فائلوں کو ایک فائل میں جوڑیں۔ صفحات فہرست کی ترتیب سے جڑتے ہیں۔",
        steps=["Add two or more PDFs, in the order you want them.", "Press Merge PDFs.", "The merged file appears at the bottom of the list. Download it."],
        faq=[("Can I compress and merge together?", "Yes. Files that have already been compressed are merged using their smaller compressed version.")]),
-  dict(path="jpg-to-pdf", nav="JPG to PDF", tab="img", spot="#toPdf",
+  dict(path="jpg-to-pdf", nav="JPG to PDF", tab="pdf", spot="#toPdf", more=True, 
        title="JPG to PDF Converter — Combine Images into One PDF | PocketPress",
        desc="Turn photos and scans into a single PDF with A4 or Letter pages. Free, private, no watermark.",
        h1="JPG to PDF", h1_ur="JPG سے PDF",
        intro="Turn photos of documents, receipts or notes into one tidy PDF with A4 pages.",
        intro_ur="دستاویزات، رسیدوں یا نوٹس کی تصاویر سے ایک صاف PDF بنائیں۔",
-       steps=["Add your images in the order you want the pages.", "Choose A4, Letter, or page = image size.", "Press Images → one PDF, then download the new PDF at the bottom of the list."],
+       steps=["Add your images in the order you want the pages.", "Under More settings → PDF, choose A4, Letter, or page = image size.", "Press Images → one PDF, then download the new PDF at the bottom of the list."],
        faq=[("Is there a watermark?", "No. The PDF contains only your pages.")]),
   dict(path="compress-word", nav="Compress Word", tab="office", example=False,
        title="Compress Word Document (DOCX) Online Free | PocketPress",
@@ -141,7 +141,7 @@ TOOLS = [
        h1="Compress Word documents", h1_ur="ورڈ فائل کا سائز کم کریں",
        intro="Large Word files are almost always large because of pictures. Those pictures are compressed, and your text and layout stay exactly as they were.",
        intro_ur="بڑی ورڈ فائلیں عموماً تصاویر کی وجہ سے بڑی ہوتی ہیں۔ تصاویر کمپریس ہوتی ہیں، ٹیکسٹ اور ترتیب ویسی ہی رہتی ہے۔",
-       steps=["Add your .docx file.", "Lower Picture quality for smaller files.", "Download and open it in Word as usual."],
+       steps=["Add your .docx file.", "For smaller files, pick Smallest, or lower Picture quality under More settings → Office.", "Download and open it in Word as usual."],
        faq=[("Does it work with old .doc files?", "No, only the modern .docx format. Open the .doc in Word and use Save As .docx first.")]),
   dict(path="compress-powerpoint", nav="Compress PowerPoint", tab="office", example=False,
        title="Compress PowerPoint (PPTX) Online Free | PocketPress",
@@ -149,7 +149,7 @@ TOOLS = [
        h1="Compress PowerPoint presentations", h1_ur="پاورپوائنٹ کا سائز کم کریں",
        intro="Make presentations small enough to email or share on WhatsApp by compressing the pictures on your slides.",
        intro_ur="سلائیڈز کی تصاویر کمپریس کر کے پریزنٹیشن کو ای میل یا واٹس ایپ کے قابل بنائیں۔",
-       steps=["Add your .pptx file.", "Lower Picture quality or the size limit for bigger savings.", "Download."],
+       steps=["Add your .pptx file.", "Pick Smallest for bigger savings.", "Download."],
        faq=[("Are videos inside slides compressed?", "Not yet. Only pictures are compressed. Videos stay as they are.")]),
   dict(path="compress-excel", nav="Compress Excel", tab="office", example=False,
        title="Compress Excel File (XLSX) Online Free | PocketPress",
@@ -157,7 +157,7 @@ TOOLS = [
        h1="Compress Excel files", h1_ur="ایکسل فائل کا سائز کم کریں",
        intro="Pictures inside the sheet are compressed and the file is repacked. Your data and formulas are not changed.",
        intro_ur="شیٹ کے اندر تصاویر کمپریس ہوتی ہیں اور فائل دوبارہ پیک ہوتی ہے۔ ڈیٹا اور فارمولے نہیں بدلتے۔",
-       steps=["Add your .xlsx file.", "Adjust Picture quality if needed.", "Download."],
+       steps=["Add your .xlsx file.", "Pick a goal. Picture quality is under More settings → Office.", "Download."],
        faq=[("My Excel file has no pictures", "It is still repacked with stronger compression, which sometimes saves a little. Large data-only sheets usually cannot get much smaller.")]),
 ]
 
@@ -206,10 +206,10 @@ def head(title, desc, canon, root, extra=""):
 '''
 
 def topbar(root):
-    links = "".join(f'<a class="hide-sm" href="{root}{p}/">{n}</a>' for p, n in [("compress-image-to-100kb","Image to 100 KB"),("compress-pdf","Compress PDF"),("jpg-to-pdf","JPG to PDF")])
+    links = "".join(f'<a class="hide-sm" href="{root}{p}/">{n}</a>' for p, n in [("compress-image-to-100kb","Image to 100 KB"),("compress-pdf","Compress PDF"),("jpg-to-pdf","JPG to PDF"),("app","Get the app")])
     return f'''<header class="top">
   <a class="brand" href="{root}">{LOGO}<span dir="ltr">{SITE_NAME}</span></a>
-  <nav aria-label="Main">{links}<button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
+  <nav aria-label="Main">{links}<button class="btn sm primary" type="button" data-install hidden data-i18n="install">Install app</button><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
 </header>
 '''
 
@@ -222,7 +222,7 @@ def footer(root):
     contact = f'<a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>' if CONTACT_EMAIL else f'<a href="{REPO_URL}/issues">Report a problem</a>'
     return f'''<footer>
   <span>© {datetime.date.today().year} {SITE_NAME} · Your files never leave your device.</span>
-  <nav aria-label="Site"><a href="{root}about/">About</a><a href="{root}privacy/">Privacy</a><a href="{root}terms/">Terms</a>{contact}<a href="{REPO_URL}">Source code</a></nav>
+  <nav aria-label="Site"><a href="{root}app/">Get the app</a><a href="{root}about/">About</a><a href="{root}privacy/">Privacy</a><a href="{root}terms/">Terms</a>{contact}<a href="{REPO_URL}">Source code</a></nav>
 </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
@@ -233,13 +233,21 @@ TOOL_UI = '''
     <aside class="panel" aria-label="Settings">
       <div class="fields">
         <span class="label" data-i18n="goal">Goal</span>
-        <div class="seg" id="presets">
+        <div class="seg seg3" id="presets">
           <button type="button" data-preset="small" aria-pressed="false"><span data-i18n="p_small">Smallest</span><small data-i18n="p_small_s">Max shrink</small></button>
-          <button type="button" data-preset="balanced" aria-pressed="true"><span data-i18n="p_bal">Balanced</span><small data-i18n="p_bal_s">Good for most</small></button>
+          <button type="button" data-preset="balanced" aria-pressed="true"><span data-i18n="p_bal">Balanced</span><small data-i18n="p_bal_s">Recommended</small></button>
           <button type="button" data-preset="quality" aria-pressed="false"><span data-i18n="p_q">Best quality</span><small data-i18n="p_q_s">Light touch</small></button>
-          <button type="button" data-preset="custom" aria-pressed="false"><span data-i18n="p_c">Custom</span><small data-i18n="p_c_s">Your settings</small></button>
         </div>
+        <small class="hint" id="customNote" hidden data-i18n="custom_note">Using your own choices from More settings.</small>
       </div>
+      <div class="fields">
+        <span class="label" data-i18n="limit">Size limit for photos</span>
+        <div class="chips" id="limitChips"><button class="chip" type="button" data-kb="0" data-i18n="no_limit">No limit</button><button class="chip" type="button" data-kb="20">20 KB</button><button class="chip" type="button" data-kb="50">50 KB</button><button class="chip" type="button" data-kb="100">100 KB</button><button class="chip" type="button" data-kb="200">200 KB</button><button class="chip" type="button" data-kb="500">500 KB</button><button class="chip" type="button" data-kb="1024">1 MB</button></div>
+        <small class="hint" data-i18n="limit_hint">Pick one when a form says "maximum 100 KB".</small>
+      </div>
+      <details class="more" id="more">
+      <summary data-i18n="more">More settings</summary>
+      <div class="fields more-body">
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" type="button" aria-selected="true" data-tab="img" id="tab-img" data-i18n="tab_img">Images</button>
         <button class="tab" role="tab" type="button" aria-selected="false" data-tab="pdf" id="tab-pdf" data-i18n="tab_pdf">PDF</button>
@@ -284,10 +292,8 @@ TOOL_UI = '''
           </div>
         </div>
         <div class="field">
-          <label class="check"><input type="checkbox" id="tgtOn"> <span><b data-i18n="tgt">Fit under a file size</b><br><small data-i18n="tgt_s">For forms and portals with upload limits. Adjusts quality and size automatically.</small></span></label>
-          <div class="row" id="tgtRow" hidden><input type="number" id="tgtV" value="100" min="5" aria-label="Size limit in KB"><small>KB</small>
-            <div class="chips" id="tgtChips"><button class="chip" type="button" data-kb="20">20 KB</button><button class="chip" type="button" data-kb="50">50 KB</button><button class="chip" type="button" data-kb="100">100 KB</button><button class="chip" type="button" data-kb="200">200 KB</button><button class="chip" type="button" data-kb="500">500 KB</button><button class="chip" type="button" data-kb="1024">1 MB</button></div>
-          </div>
+          <label class="check"><input type="checkbox" id="tgtOn"> <span><b data-i18n="tgt">Fit under a file size</b><br><small data-i18n="tgt_s">Type any limit, for example 30 or 150 KB.</small></span></label>
+          <div class="row" id="tgtRow" hidden><input type="number" id="tgtV" value="100" min="5" aria-label="Size limit in KB"><small>KB</small></div>
         </div>
         <small class="hint" data-i18n="meta_hint">Photo location data and other hidden metadata are removed automatically.</small>
       </div>
@@ -313,6 +319,9 @@ TOOL_UI = '''
           <div class="row" style="flex-wrap:nowrap"><input type="range" id="pdfQ" min="20" max="95" value="68" aria-label="PDF image quality"><span class="rangeval" id="pdfQv">68</span></div>
         </div>
         <label class="check" data-strong><input type="checkbox" id="pdfGray"> <span><span data-i18n="gray">Black &amp; white (grayscale)</span><br><small data-i18n="gray_s">Great for scanned forms, CNIC copies and receipts.</small></span></label>
+        <label class="field"><span data-i18n="pg_label">Page size for Images → PDF</span>
+          <select id="pageSize"><option value="a4" data-i18n="pg_a4">A4 pages</option><option value="letter" data-i18n="pg_letter">Letter pages</option><option value="fit" data-i18n="pg_fit">Page = image size</option></select>
+        </label>
       </div>
 
       <div class="fields" data-pane="office" hidden>
@@ -326,8 +335,9 @@ TOOL_UI = '''
         <small class="hint" data-i18n="other_hint">Other file types are packed into a compressed .zip.</small>
       </div>
 
-      <div class="divider"></div>
-      <button class="btn primary" id="rerun" type="button" data-i18n="apply">Apply settings to all files</button>
+      </div>
+      </details>
+      <small class="hint" data-i18n="auto_hint">Changes apply to your files straight away.</small>
     </aside>
 
     <main class="fields" style="gap:14px">
@@ -347,7 +357,6 @@ TOOL_UI = '''
         <div class="row">
           <button class="btn" id="saveAll" type="button" disabled data-i18n="save_all">Download all (.zip)</button>
           <button class="btn" id="toPdf" type="button" disabled data-i18n="to_pdf">Images → one PDF</button>
-          <select id="pageSize" aria-label="PDF page size"><option value="a4" data-i18n="pg_a4">A4 pages</option><option value="letter" data-i18n="pg_letter">Letter pages</option><option value="fit" data-i18n="pg_fit">Page = image size</option></select>
           <button class="btn" id="mergePdf" type="button" disabled data-i18n="merge">Merge PDFs</button>
         </div>
         <button class="btn ghost sm" id="clearAll" type="button" data-i18n="clear">Clear list</button>
@@ -385,7 +394,7 @@ def jsonld(tool, canon):
 def tool_page(tool):
     root = rel_root(tool["path"])
     canon = SITE_URL + "/" + (tool["path"] + "/" if tool["path"] else "")
-    cfg = {k: tool[k] for k in ("tab","preset","quick","set","spot","example") if k in tool}
+    cfg = {k: tool[k] for k in ("tab","preset","quick","set","spot","example","more") if k in tool}
     steps = "".join(f"<li>{e(s)}</li>" for s in tool["steps"])
     body = head(tool["title"], tool["desc"], canon, root, jsonld(tool, canon)) + topbar(root) + f'''
   <section class="hero">
@@ -433,6 +442,36 @@ PAGES = {
 <p>The full source code is public on <a href="{REPO_URL}">GitHub</a>, so anyone can check that files are never uploaded.</p>
 <h2>Contact</h2>
 <p>Found a problem or have an idea? Please {CONTACT_LINE}.</p>
+'''),
+ "app": ("Get the PocketPress App — Windows, Android, iPhone", "Install PocketPress on your phone or computer. Works offline, opens files straight from your gallery or folders, and is free.", f'''
+<h1>Get the {SITE_NAME} app</h1>
+<p class="sub">Install {SITE_NAME} on your phone or computer and it works like normal software: its own icon, its own window, and it keeps working without internet. It is free, small and updates itself.</p>
+<div class="row"><button class="btn primary" type="button" data-install hidden data-i18n="install">Install app</button><span class="hint" id="installedNote" hidden>You are already using the {SITE_NAME} app.</span></div>
+<div class="appgrid">
+<section class="appcard"><h2>Android</h2><ol>
+<li>Open this page in <b>Chrome</b>.</li>
+<li>Tap <b>Install app</b> above. If you don't see it, tap the <b>⋮</b> menu, then <b>Install app</b> or <b>Add to Home screen</b>.</li>
+<li>Open {SITE_NAME} from your home screen.</li></ol>
+<p class="hint">Tip: in your Gallery or Files app, tap <b>Share</b> on any photo or PDF and choose <b>{SITE_NAME}</b> to compress it straight away.</p></section>
+<section class="appcard" id="iphone"><h2>iPhone and iPad</h2><ol>
+<li>Open this page in <b>Safari</b>.</li>
+<li>Tap the <b>Share</b> button (the square with an arrow pointing up).</li>
+<li>Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.</li></ol>
+<p class="hint">Apple only allows this from Safari, not Chrome.</p></section>
+<section class="appcard"><h2>Windows and Mac</h2><ol>
+<li>Open this page in <b>Chrome</b> or <b>Microsoft Edge</b>.</li>
+<li>Click <b>Install app</b> above, or the install icon at the right end of the address bar.</li>
+<li>{SITE_NAME} gets its own window and a desktop or Start menu icon.</li></ol>
+<p class="hint">After installing, right-click a photo or PDF and choose <b>Open with → {SITE_NAME}</b>.</p></section>
+</div>
+<h2>Why install?</h2>
+<ul>
+<li><b>Works offline.</b> Compress files with no internet connection.</li>
+<li><b>One tap away.</b> No searching for the website every time.</li>
+<li><b>Still private.</b> Files are processed on your device, exactly like the website.</li>
+<li><b>Always up to date.</b> New features arrive automatically, nothing to download again.</li>
+</ul>
+<p><a class="btn" href="{BASE_PATH}">Open {SITE_NAME} now</a></p>
 '''),
  "privacy": ("Privacy Policy — PocketPress", "PocketPress processes files only on your device. We never receive, store or see your files.", f'''
 <h1>Privacy Policy</h1>
@@ -498,30 +537,60 @@ def main():
     write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
     write("manifest.webmanifest", json.dumps({
         "name": SITE_NAME, "short_name": SITE_NAME, "description": "Compress images, PDFs and Office files privately on your device.",
-        "start_url": "./", "scope": "./", "display": "standalone", "background_color": "#F2F4F8", "theme_color": THEME,
+        "id": "./", "start_url": "./", "scope": "./", "display": "standalone", "lang": "en", "categories": ["utilities", "productivity"],
+        "shortcuts": [{"name": "Compress image to 100 KB", "url": "compress-image-to-100kb/"}, {"name": "Compress PDF", "url": "compress-pdf/"}, {"name": "JPG to PDF", "url": "jpg-to-pdf/"}],
+        "share_target": {"action": "share-target/", "method": "POST", "enctype": "multipart/form-data",
+                         "params": {"files": [{"name": "files", "accept": ["image/*", "application/pdf", ".pdf", ".docx", ".xlsx", ".pptx",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/vnd.openxmlformats-officedocument.presentationml.presentation"]}]}},
+        "file_handlers": [{"action": "./", "accept": {
+            "image/jpeg": [".jpg", ".jpeg", ".jfif"], "image/png": [".png"], "image/webp": [".webp"], "image/gif": [".gif"], "image/bmp": [".bmp"], "image/heic": [".heic", ".heif"],
+            "application/pdf": [".pdf"],
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"]}}],
+        "launch_handler": {"client_mode": "focus-existing"},
+        "screenshots": [{"src": "assets/screen-wide.jpg", "sizes": "1280x800", "type": "image/jpeg", "form_factor": "wide", "label": "PocketPress on a computer"},
+                        {"src": "assets/screen-narrow.jpg", "sizes": "780x1688", "type": "image/jpeg", "form_factor": "narrow", "label": "PocketPress on a phone"}], "background_color": "#F2F4F8", "theme_color": THEME,
         "icons": [{"src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png"},
                   {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png"},
                   {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]}, indent=2))
 
     # Service worker: version changes whenever any asset changes, so visitors get updates.
     core = ["./", "assets/app.css", "assets/app.js", "assets/icon.svg", "manifest.webmanifest",
-            "assets/vendor/jszip.min.js", "assets/vendor/pdf-lib.min.js", "assets/vendor/pdf.min.js", "assets/vendor/pdf.worker.min.js",
+            "assets/example-coffee.jpg", "assets/vendor/jszip.min.js", "assets/vendor/pdf-lib.min.js", "assets/vendor/pdf.min.js", "assets/vendor/pdf.worker.min.js",
             "assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2", "assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2",
             "assets/fonts/bricolage-grotesque-latin-800-normal.woff2", "assets/fonts/bricolage-grotesque-latin-600-normal.woff2",
             "assets/fonts/jetbrains-mono-latin-400-normal.woff2", "assets/fonts/jetbrains-mono-latin-600-normal.woff2"]
+    core += [t["path"] + "/" for t in TOOLS if t["path"]] + [s + "/" for s in PAGES]
     h = hashlib.sha1()
     for c in core[1:]:
-        h.update((ROOT_DIR / c).read_bytes())
+        f = ROOT_DIR / c
+        h.update((f / "index.html" if c.endswith("/") else f).read_bytes())
     write("sw.js", f'''/* PocketPress offline support — generated by build.py */
 const CACHE = "pp-{h.hexdigest()[:10]}";
 const CORE = {json.dumps(core)};
 self.addEventListener("install", e => {{ e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); }});
 self.addEventListener("activate", e => {{ e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); }});
 self.addEventListener("fetch", e => {{
-  const req = e.request; if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
+  const req = e.request, url = new URL(req.url);
+  /* Android "Share to PocketPress": keep the shared files briefly, then open the app */
+  if (req.method === "POST" && url.pathname.endsWith("/share-target/")) {{
+    e.respondWith((async () => {{
+      const fd = await req.formData(); const files = fd.getAll("files").filter(f => typeof f !== "string");
+      await caches.delete("pp-share"); const c = await caches.open("pp-share");
+      for (let i = 0; i < files.length; i++) {{
+        await c.put(new Request("shared/" + i), new Response(files[i], {{ headers: {{ "content-type": files[i].type || "application/octet-stream", "x-name": encodeURIComponent(files[i].name || ("shared-" + i)) }} }}));
+      }}
+      return Response.redirect("./?shared=" + files.length, 303);
+    }})());
+    return;
+  }}
+  if (req.method !== "GET" || url.origin !== location.origin) return;
   if (req.mode === "navigate") {{
     e.respondWith(fetch(req).then(r => {{ const c = r.clone(); caches.open(CACHE).then(x => x.put(req, c)); return r; }})
-      .catch(() => caches.match(req).then(r => r || caches.match("./"))));
+      .catch(() => caches.match(req, {{ ignoreSearch: true }}).then(r => r || caches.match("./"))));
     return;
   }}
   e.respondWith(caches.match(req).then(r => r || fetch(req).then(res => {{ if (res.ok) {{ const c = res.clone(); caches.open(CACHE).then(x => x.put(req, c)); }} return res; }})));

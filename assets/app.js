@@ -10,14 +10,14 @@ const T = {
 en:{
   tagline:'Shrink, resize and convert images, PDFs and Office files. Free, fast and private.',
   privacy:'Your files never leave your device',
-  goal:'Goal', p_small:'Smallest', p_small_s:'Max shrink', p_bal:'Balanced', p_bal_s:'Good for most', p_q:'Best quality', p_q_s:'Light touch', p_c:'Custom', p_c_s:'Your settings',
+  goal:'Goal', p_small:'Smallest', p_small_s:'Max shrink', p_bal:'Balanced', p_bal_s:'Recommended', p_q:'Best quality', p_q_s:'Light touch', p_c:'Custom', p_c_s:'Your settings',
   tab_img:'Images', tab_pdf:'PDF', tab_office:'Office',
   quick:'Quick sizes for forms', q_photo:'Profile photo', q_photo_s:'600 px · under 100 KB', q_sign:'Signature', q_sign_s:'400×150 · under 50 KB', q_id:'ID / CNIC scan', q_id_s:'1600 px · under 200 KB', q_chat:'WhatsApp / email', q_chat_s:'1600 px · good quality',
   q_note:'Always check the exact limit your form asks for.',
   fmt:'Output format', fmt_keep:'Same as original', fmt_jpg:'JPG (smallest for photos)', fmt_webp:'WebP (modern, very small)', fmt_png:'PNG (lossless, transparency)',
   quality:'Quality', q_hint:'Lower is smaller. 70–80 looks the same to most eyes.',
   resize:'Resize', rs_none:'Keep original size', rs_long:'Limit longest side', rs_pct:'Scale by percentage', rs_exact:'Exact width × height', keep_prop:'Keep proportions (fit inside the box)',
-  tgt:'Fit under a file size', tgt_s:'For forms and portals with upload limits. Adjusts quality and size automatically.',
+  tgt:'Fit under a file size', tgt_s:'Type any limit, for example 30 or 150 KB.',
   meta_hint:'Photo location data and other hidden metadata are removed automatically.',
   method:'Method', strong:'Strong', strong_s:'Best for scans', light:'Light', light_s:'Keeps text',
   strong_hint:'Redraws each page as an image. Big savings on scanned documents, but text can no longer be selected or searched.',
@@ -39,19 +39,23 @@ en:{
   t_heic:'Converting iPhone photo', t_pdf_build:'Building PDF', t_merge_build:'Merging',
   cmp_orig:'Original', cmp_new:'Compressed', close:'Close', cmp_hint:'Drag the slider to compare',
   page_n:'Page {i} of {n}', pic_n:'Picture {i} of {n}', repack:'Repacking',
+  limit:'Size limit for photos', no_limit:'No limit', limit_hint:'Pick one when a form says "maximum 100 KB".',
+  more:'More settings', custom_note:'Using your own choices from More settings.', auto_hint:'Changes apply to your files straight away.',
+  pg_label:'Page size for Images → PDF', install:'Install app', t_installed:'PocketPress is installed. Open it from your home screen or Start menu.',
+  t_shared:'Opened {n} shared file(s)', t_upd:'Updated with your new settings',
   lang:'اردو'
 },
 ur:{
   tagline:'تصاویر، پی ڈی ایف اور آفس فائلوں کا سائز کم کریں، ریسائز اور کنورٹ کریں۔ مفت، تیز اور محفوظ۔',
   privacy:'آپ کی فائلیں آپ کے آلے سے باہر نہیں جاتیں',
-  goal:'مقصد', p_small:'سب سے چھوٹی', p_small_s:'زیادہ سے زیادہ کمی', p_bal:'متوازن', p_bal_s:'زیادہ تر کے لیے بہترین', p_q:'بہترین کوالٹی', p_q_s:'ہلکی کمی', p_c:'اپنی مرضی', p_c_s:'آپ کی سیٹنگز',
+  goal:'مقصد', p_small:'سب سے چھوٹی', p_small_s:'زیادہ سے زیادہ کمی', p_bal:'متوازن', p_bal_s:'تجویز کردہ', p_q:'بہترین کوالٹی', p_q_s:'ہلکی کمی', p_c:'اپنی مرضی', p_c_s:'آپ کی سیٹنگز',
   tab_img:'تصاویر', tab_pdf:'پی ڈی ایف', tab_office:'آفس',
   quick:'فارمز کے لیے فوری سائز', q_photo:'پروفائل تصویر', q_photo_s:'\u2066600 px\u2069 · \u2066100 KB\u2069 سے کم', q_sign:'دستخط', q_sign_s:'\u2066400×150\u2069 · \u206650 KB\u2069 سے کم', q_id:'شناختی کارڈ اسکین', q_id_s:'\u20661600 px\u2069 · \u2066200 KB\u2069 سے کم', q_chat:'واٹس ایپ / ای میل', q_chat_s:'\u20661600 px\u2069 · اچھی کوالٹی',
   q_note:'اپنے فارم کی اصل حد ضرور چیک کریں۔',
   fmt:'آؤٹ پٹ فارمیٹ', fmt_keep:'اصل جیسا', fmt_jpg:'JPG (تصاویر کے لیے سب سے چھوٹا)', fmt_webp:'WebP (جدید، بہت چھوٹا)', fmt_png:'PNG (بغیر نقصان، شفاف پس منظر)',
   quality:'کوالٹی', q_hint:'کم نمبر کا مطلب چھوٹی فائل۔ 70 سے 80 پر فرق عموماً نظر نہیں آتا۔',
   resize:'سائز تبدیل کریں', rs_none:'اصل سائز رکھیں', rs_long:'لمبی سائیڈ کی حد', rs_pct:'فیصد کے حساب سے', rs_exact:'مخصوص چوڑائی × اونچائی', keep_prop:'تناسب برقرار رکھیں',
-  tgt:'فائل سائز کی حد کے اندر', tgt_s:'اپ لوڈ کی حد والے فارمز کے لیے۔ کوالٹی اور سائز خود بخود ایڈجسٹ ہوتے ہیں۔',
+  tgt:'فائل سائز کی حد کے اندر', tgt_s:'کوئی بھی حد لکھیں، مثلاً 30 یا 150 KB۔',
   meta_hint:'تصویر کی لوکیشن اور دیگر چھپی معلومات خود بخود ہٹا دی جاتی ہیں۔',
   method:'طریقہ', strong:'طاقتور', strong_s:'اسکین کے لیے بہترین', light:'ہلکا', light_s:'ٹیکسٹ محفوظ رہتا ہے',
   strong_hint:'ہر صفحے کو تصویر کے طور پر دوبارہ بناتا ہے۔ اسکین شدہ دستاویزات میں بڑی بچت، لیکن ٹیکسٹ سلیکٹ یا سرچ نہیں ہو سکے گا۔',
@@ -73,6 +77,10 @@ ur:{
   t_heic:'آئی فون تصویر کنورٹ ہو رہی ہے', t_pdf_build:'PDF بن رہی ہے', t_merge_build:'جوڑا جا رہا ہے',
   cmp_orig:'اصل', cmp_new:'کمپریسڈ', close:'بند کریں', cmp_hint:'موازنے کے لیے سلائیڈر کھینچیں',
   page_n:'صفحہ {i} از {n}', pic_n:'تصویر {i} از {n}', repack:'دوبارہ پیک ہو رہی ہے',
+  limit:'تصاویر کے لیے سائز کی حد', no_limit:'کوئی حد نہیں', limit_hint:'جب فارم کہے "زیادہ سے زیادہ 100 KB" تو یہاں سے منتخب کریں۔',
+  more:'مزید سیٹنگز', custom_note:'مزید سیٹنگز میں آپ کی اپنی پسند استعمال ہو رہی ہے۔', auto_hint:'تبدیلیاں فوراً آپ کی فائلوں پر لاگو ہو جاتی ہیں۔',
+  pg_label:'تصاویر سے PDF کے صفحے کا سائز', install:'ایپ انسٹال کریں', t_installed:'PocketPress انسٹال ہو گئی۔ اسے ہوم اسکرین یا اسٹارٹ مینو سے کھولیں۔',
+  t_shared:'{n} شیئر کی گئی فائل کھولی گئی', t_upd:'نئی سیٹنگز کے ساتھ اپ ڈیٹ ہو گیا',
   lang:'English'
 }};
 let LANG = 'en';
@@ -94,13 +102,30 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   window.addEventListener('load', () => navigator.serviceWorker.register(ROOT + 'sw.js').catch(()=>{}));
 }
 
+let tt; function toast(msg){ const el=$('#toast'); if(!el) return; el.textContent=msg; el.hidden=false; clearTimeout(tt); tt=setTimeout(()=>el.hidden=true,3600); }
+
+/* ================= install as an app ================= */
+const STANDALONE = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+let installEvt = null;
+const showInstall = on => $$('[data-install]').forEach(b => b.hidden = !on);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; showInstall(true); });
+window.addEventListener('appinstalled', () => { installEvt = null; showInstall(false); toast(t('t_installed')); });
+if (!STANDALONE && IOS) showInstall(true);
+if (STANDALONE && $('#installedNote')) $('#installedNote').hidden = false;
+$$('[data-install]').forEach(b => b.addEventListener('click', async () => {
+  if (installEvt) { installEvt.prompt(); const r = await installEvt.userChoice.catch(()=>null); if (r && r.outcome === 'accepted') { installEvt = null; showInstall(false); } return; }
+  const target = ROOT + 'app/' + (IOS ? '#iphone' : '');
+  if (location.pathname.replace(/index\.html$/,'').endsWith('/app/')) { const el = document.getElementById(IOS?'iphone':'') ; if (el) el.scrollIntoView({behavior:'smooth'}); }
+  else location.href = target;
+}));
+
 if (!$('#queue')) { applyLang(); return; }   /* content-only pages stop here */
 
 /* ================= helpers ================= */
 const fmt = b => { if(b==null) return '—'; if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(b<10240?1:0)+' KB'; return (b/1048576).toFixed(b<104857600?2:1)+' MB'; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let uid = 0; const items = []; let busy = false; const pending = [];
-let tt; function toast(msg){ const el=$('#toast'); el.textContent=msg; el.hidden=false; clearTimeout(tt); tt=setTimeout(()=>el.hidden=true,3200); }
 function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=()=>rej(new Error('Could not load '+src)); document.head.appendChild(s); }); }
 
 let pdfReady = null;
@@ -126,7 +151,7 @@ function setVals(p){
   if(p.tgt!=null) $('#tgtOn').checked=p.tgt; if(p.tgtV) $('#tgtV').value=p.tgtV;
   if(p.pdfDpi) $('#pdfDpi').value=p.pdfDpi; if(p.pdfQ) $('#pdfQ').value=p.pdfQ; if(p.offQ) $('#offQ').value=p.offQ; if(p.offMax) $('#offMax').value=p.offMax; if(p.pdfMode) setPdfMode(p.pdfMode); if(p.gray!=null) $('#pdfGray').checked=p.gray;
 }
-function pressPreset(name){ $$('#presets button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.preset===name)); }
+function pressPreset(name){ $$('#presets button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.preset===name)); $('#customNote').hidden = name!=='custom'; }
 function pressQuick(name){ $$('#quick button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.quick===name)); }
 function applyPreset(name){ pressPreset(name); pressQuick(null); if(PRESETS[name]) setVals(PRESETS[name]); syncUI(); }
 function markCustom(){ pressPreset('custom'); pressQuick(null); }
@@ -134,7 +159,8 @@ function syncUI(){
   $('#imgQv').textContent=$('#imgQ').value; $('#pdfQv').textContent=$('#pdfQ').value; $('#offQv').textContent=$('#offQ').value;
   const m=$('#rsMode').value; $('#rsLong').hidden=m!=='long'; $('#rsPct').hidden=m!=='pct'; $('#rsExact').hidden=m!=='exact';
   $('#tgtRow').hidden=!$('#tgtOn').checked;
-  $$('#tgtChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.kb==$('#tgtV').value));
+  const kb = $('#tgtOn').checked ? $('#tgtV').value : '0';
+  $$('#limitChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.kb==kb));
   $$('[data-long]').forEach(c=>c.setAttribute('aria-pressed', c.dataset.long==$('#rsLongV').value));
 }
 function S(){ return {
@@ -145,14 +171,14 @@ function S(){ return {
   offQ:+$('#offQ').value/100, offMax:+$('#offMax').value||1920 }; }
 function showTab(name){ $$('.tab').forEach(x=>x.setAttribute('aria-selected', x.dataset.tab===name)); $$('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==name); }
 
-$$('#presets button').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.preset==='custom') markCustom(); else applyPreset(b.dataset.preset); }));
-$$('#quick button').forEach(b=>b.addEventListener('click',()=>{ setVals(QUICK[b.dataset.quick]); pressPreset('custom'); pressQuick(b.dataset.quick); syncUI(); }));
-$$('#pdfMode button').forEach(b=>b.addEventListener('click',()=>{ setPdfMode(b.dataset.mode); markCustom(); }));
+let rerunT; function autoApply(){ clearTimeout(rerunT); rerunT=setTimeout(requeueAll, 450); }
+$$('#presets button').forEach(b=>b.addEventListener('click',()=>{ const keepLimit=$('#tgtOn').checked, kb=$('#tgtV').value; applyPreset(b.dataset.preset); if(keepLimit){ $('#tgtOn').checked=true; $('#tgtV').value=kb; $('#imgFormat').value='image/jpeg'; syncUI(); } autoApply(); }));
+$$('#quick button').forEach(b=>b.addEventListener('click',()=>{ setVals(QUICK[b.dataset.quick]); pressPreset('custom'); pressQuick(b.dataset.quick); syncUI(); autoApply(); }));
+$$('#pdfMode button').forEach(b=>b.addEventListener('click',()=>{ setPdfMode(b.dataset.mode); markCustom(); autoApply(); }));
 $$('.tab').forEach(x=>x.addEventListener('click',()=>showTab(x.dataset.tab)));
-$$('aside input, aside select').forEach(el=>el.addEventListener('input',()=>{ syncUI(); markCustom(); }));
-$$('[data-long]').forEach(c=>c.addEventListener('click',()=>{ $('#rsLongV').value=c.dataset.long; syncUI(); markCustom(); }));
-$$('#tgtChips .chip').forEach(c=>c.addEventListener('click',()=>{ $('#tgtV').value=c.dataset.kb; syncUI(); markCustom(); }));
-$('#tgtOn').addEventListener('change',()=>{ if($('#tgtOn').checked && $('#imgFormat').value==='keep') $('#imgFormat').value='image/jpeg'; syncUI(); });
+$$('aside input, aside select').forEach(el=>el.addEventListener('input',()=>{ if(el.id==='tgtV') $('#tgtOn').checked=true; if(el.id==='tgtOn'||el.id==='tgtV'){ if($('#tgtOn').checked && $('#imgFormat').value==='keep') $('#imgFormat').value='image/jpeg'; syncUI(); autoApply(); return; } if(el.id==='pageSize') return; syncUI(); markCustom(); autoApply(); }));
+$$('[data-long]').forEach(c=>c.addEventListener('click',()=>{ $('#rsLongV').value=c.dataset.long; syncUI(); markCustom(); autoApply(); }));
+$$('#limitChips .chip').forEach(c=>c.addEventListener('click',()=>{ const kb=+c.dataset.kb; $('#tgtOn').checked = kb>0; if(kb) $('#tgtV').value=kb; if(kb && $('#imgFormat').value==='keep') $('#imgFormat').value='image/jpeg'; syncUI(); autoApply(); }));
 
 /* ================= file kinds ================= */
 const ext = n => (n.match(/\.([^.]+)$/)||[,''])[1].toLowerCase();
@@ -309,6 +335,13 @@ function addFiles(list, example){
   for(const f of list){ const it={id:++uid, file:f, kind:kindOf(f), status:'queued', out:null, note:'', example:!!example}; items.push(it); pending.push(it); }
   render(); pump();
 }
+function requeueAll(){
+  let n=0;
+  for(const it of items){ if(it.generated) continue;
+    if(it.status==='working'){ it.dirty=true; n++; continue; }
+    it.status='queued'; it.out=null; it.note=''; if(!pending.includes(it)) pending.push(it); n++; }
+  if(n){ render(); pump(); }
+}
 async function pump(){
   if(busy) return; busy=true; renderSummary();
   while(pending.length){
@@ -323,6 +356,7 @@ async function pump(){
       if(it.outUrl){ URL.revokeObjectURL(it.outUrl); it.outUrl=null; }
       it.status='done';
     } catch(e){ console.error(e); it.status='error'; it.note = (e && e.message) ? e.message : t('t_err'); }
+    if(it.dirty){ it.dirty=false; it.status='queued'; it.out=null; it.note=''; pending.push(it); }
     renderItem(it); renderSummary();
     await new Promise(r=>setTimeout(r,0));
   }
@@ -373,8 +407,9 @@ function renderSummary(){
   $('#sCount').textContent=items.length; $('#sBefore').textContent=fmt(before); $('#sAfter').textContent=fmt(after);
   $('#sSaved').textContent = before? Math.max(0,Math.round((1-after/before)*100))+'%' : '0%';
   $('#saveAll').disabled = !done.length || busy;
-  $('#toPdf').disabled = !items.some(i=>i.kind==='img') || busy;
-  $('#mergePdf').disabled = items.filter(i=>i.kind==='pdf').length<2 || busy;
+  const nImg = items.filter(i=>i.kind==='img').length, nPdf = items.filter(i=>i.kind==='pdf').length;
+  $('#toPdf').hidden = !nImg; $('#toPdf').disabled = busy;
+  $('#mergePdf').hidden = nPdf<2; $('#mergePdf').disabled = busy;
 }
 
 $('#queue').addEventListener('click', e=>{
@@ -385,7 +420,6 @@ $('#queue').addEventListener('click', e=>{
   if(cm){ openCompare(find(cm.dataset.cmp)); }
   if(dl){ const i=items.findIndex(x=>x.id==dl.dataset.del); if(i>-1){ const it=items[i]; if(it.thumb) URL.revokeObjectURL(it.thumb); if(it.outUrl) URL.revokeObjectURL(it.outUrl); items.splice(i,1); render(); } }
 });
-$('#rerun').addEventListener('click',()=>{ if(!items.length){ toast(t('t_add')); return; } for(const it of items){ if(it.generated) continue; it.status='queued'; it.out=null; it.note=''; if(!pending.includes(it)) pending.push(it); } render(); pump(); });
 $('#clearAll').addEventListener('click',()=>{ items.forEach(i=>{ i.thumb&&URL.revokeObjectURL(i.thumb); i.outUrl&&URL.revokeObjectURL(i.outUrl); }); items.length=0; pending.length=0; render(); });
 
 /* ================= compare viewer ================= */
@@ -474,14 +508,29 @@ window.addEventListener('dragover',e=>e.preventDefault()); window.addEventListen
 window.addEventListener('paste',e=>{ const f=[...(e.clipboardData?.files||[])]; if(f.length){ addFiles(f.map((x,i)=>x.name&&x.name!=='image.png'?x:new File([x],`pasted-${Date.now()}-${i}.png`,{type:x.type}))); toast(t('t_pasted',{n:f.length})); } });
 
 /* ================= example so the first view shows what the tool does ================= */
-function makeExample(){
-  const c=document.createElement('canvas'); c.width=3000; c.height=2000; const x=c.getContext('2d');
-  const g=x.createLinearGradient(0,0,0,2000); g.addColorStop(0,'#7FB2E5'); g.addColorStop(.55,'#F6D7A7'); g.addColorStop(.56,'#3E6B4A'); g.addColorStop(1,'#1F3A27'); x.fillStyle=g; x.fillRect(0,0,3000,2000);
-  x.fillStyle='#FFF4D6'; x.beginPath(); x.arc(2200,700,180,0,Math.PI*2); x.fill();
-  x.fillStyle='#4A5D7A'; x.beginPath(); x.moveTo(0,1120); for(let i=0;i<=30;i++){ x.lineTo(i*100, 1120-Math.abs(Math.sin(i*.7))*420-Math.random()*60); } x.lineTo(3000,1120); x.fill();
-  const id=x.getImageData(0,0,3000,2000), d=id.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-.5)*34; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(id,0,0);
-  c.toBlob(b=>{ if(b) addFiles([new File([b],'example-photo.jpg',{type:'image/jpeg'})], true); }, 'image/jpeg', 0.97);
+async function makeExample(){
+  try {
+    const r = await fetch(ROOT + 'assets/example-coffee.jpg'); if(!r.ok) return;
+    const b = await r.blob(); if(items.length) return;   /* visitor already added files */
+    addFiles([new File([b], 'coffee-photo.jpg', {type:'image/jpeg'})], true);
+  } catch(e){}
 }
+
+/* ================= files opened from outside the page ================= */
+async function takeShared(){
+  const m = location.search.match(/[?&]shared=(\d+)/); if(!m || !('caches' in window)) return false;
+  history.replaceState(null, '', location.pathname);
+  try {
+    const c = await caches.open('pp-share'); const keys = await c.keys(); const files = [];
+    for(const k of keys){ const r = await c.match(k); const b = await r.blob(); files.push(new File([b], decodeURIComponent(r.headers.get('x-name')||'shared'), {type:b.type})); }
+    await caches.delete('pp-share');
+    if(files.length){ addFiles(files); toast(t('t_shared',{n:files.length})); return true; }
+  } catch(e){ console.error(e); }
+  return false;
+}
+let launched = false;
+if('launchQueue' in window){ window.launchQueue.setConsumer(async p => { if(!p.files || !p.files.length) return; launched = true;
+  const files = await Promise.all(p.files.map(h => h.getFile())); addFiles(files); }); }
 
 /* ================= boot ================= */
 applyPreset(PAGE.preset && PRESETS[PAGE.preset] ? PAGE.preset : 'balanced');
@@ -491,6 +540,7 @@ syncUI();
 showTab(PAGE.tab || 'img');
 if(PAGE.spot && $(PAGE.spot)) $(PAGE.spot).classList.add('spot');
 applyLang();
-if(PAGE.example !== false) makeExample();
+if(PAGE.more) $('#more').open = true;
+takeShared().then(got => { if(!got && !launched && PAGE.example !== false) setTimeout(()=>{ if(!items.length && !launched) makeExample(); }, 150); });
 window.PocketPress = { addFiles, items };   /* handy for testing */
 })();
