@@ -43,6 +43,10 @@ en:{
   more:'More settings', custom_note:'Using your own choices from More settings.', auto_hint:'Changes apply to your files straight away.',
   pg_label:'Page size for Images → PDF', install:'Install app', t_installed:'PocketPress is installed. Open it from your home screen or Start menu.',
   t_shared:'Opened {n} shared file(s)', t_upd:'Updated with your new settings',
+  edit:'Edit', pages:'Pages', lock:'Lock', sheet:'Print sheet', drag:'Drag to reorder',
+  th_auto:'Theme: automatic', th_light:'Theme: light', th_dark:'Theme: dark',
+  life:'You have saved {size} across {n} files with PocketPress', t_party:'Nice! You just saved {size}.',
+  pw_err:'This PDF has a password. Tap Lock to remove it first, then compress.',
   lang:'اردو'
 },
 ur:{
@@ -81,6 +85,10 @@ ur:{
   more:'مزید سیٹنگز', custom_note:'مزید سیٹنگز میں آپ کی اپنی پسند استعمال ہو رہی ہے۔', auto_hint:'تبدیلیاں فوراً آپ کی فائلوں پر لاگو ہو جاتی ہیں۔',
   pg_label:'تصاویر سے PDF کے صفحے کا سائز', install:'ایپ انسٹال کریں', t_installed:'PocketPress انسٹال ہو گئی۔ اسے ہوم اسکرین یا اسٹارٹ مینو سے کھولیں۔',
   t_shared:'{n} شیئر کی گئی فائل کھولی گئی', t_upd:'نئی سیٹنگز کے ساتھ اپ ڈیٹ ہو گیا',
+  edit:'ایڈٹ', pages:'صفحات', lock:'لاک', sheet:'پرنٹ شیٹ', drag:'ترتیب بدلنے کے لیے کھینچیں',
+  th_auto:'تھیم: خودکار', th_light:'تھیم: روشن', th_dark:'تھیم: گہرا',
+  life:'آپ PocketPress سے {n} فائلوں میں {size} بچا چکے ہیں', t_party:'زبردست! آپ نے ابھی {size} بچائے۔',
+  pw_err:'اس PDF پر پاس ورڈ ہے۔ پہلے لاک بٹن سے پاس ورڈ ہٹائیں، پھر کمپریس کریں۔',
   lang:'English'
 }};
 let LANG = 'en';
@@ -94,6 +102,7 @@ function applyLang(){
   $$('[data-ur]').forEach(el => { if(!el.dataset.en) el.dataset.en = el.innerHTML; el.innerHTML = LANG==='ur' ? el.dataset.ur : el.dataset.en; });
   if (typeof render === 'function' && $('#queue')) render();
   if ($('#pdfModeHint')) setPdfMode(pdfMode, true);
+  setTheme(getTheme()); showStats();
 }
 $$('[data-lang-toggle]').forEach(b => b.addEventListener('click', () => { LANG = LANG==='ur'?'en':'ur'; try{localStorage.setItem('pp-lang',LANG);}catch(e){} applyLang(); }));
 
@@ -101,6 +110,24 @@ $$('[data-lang-toggle]').forEach(b => b.addEventListener('click', () => { LANG =
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   window.addEventListener('load', () => navigator.serviceWorker.register(ROOT + 'sw.js').catch(()=>{}));
 }
+
+const fmt = b => { if(b==null) return '—'; if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(b<10240?1:0)+' KB'; if(b<1073741824) return (b/1048576).toFixed(b<104857600?2:1)+' MB'; return (b/1073741824).toFixed(2)+' GB'; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ================= theme switch ================= */
+const THEMES = ['auto','light','dark'];
+function getTheme(){ try { return localStorage.getItem('pp-theme') || 'auto'; } catch(e){ return 'auto'; } }
+function setTheme(th){
+  if(th==='auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = th;
+  try { th==='auto' ? localStorage.removeItem('pp-theme') : localStorage.setItem('pp-theme', th); } catch(e){}
+  $$('[data-theme-toggle]').forEach(b => { b.dataset.mode = th; b.setAttribute('aria-label', t('th_'+th)); b.title = t('th_'+th); });
+}
+$$('[data-theme-toggle]').forEach(b => b.addEventListener('click', () => setTheme(THEMES[(THEMES.indexOf(getTheme())+1)%3])));
+
+/* ================= lifetime savings (kept on this device only) ================= */
+function getStats(){ try { return JSON.parse(localStorage.getItem('pp-stats')) || {saved:0, files:0}; } catch(e){ return {saved:0, files:0}; } }
+function putStats(st){ try { localStorage.setItem('pp-stats', JSON.stringify(st)); } catch(e){} showStats(); }
+function showStats(){ const el=$('#lifetime'); if(!el) return; const st=getStats(); el.hidden = !(st.saved > 0); if(st.saved>0) el.querySelector('span').textContent = t('life', {size:fmt(st.saved), n:st.files}); }
 
 let tt; function toast(msg){ const el=$('#toast'); if(!el) return; el.textContent=msg; el.hidden=false; clearTimeout(tt); tt=setTimeout(()=>el.hidden=true,3600); }
 
@@ -123,8 +150,6 @@ $$('[data-install]').forEach(b => b.addEventListener('click', async () => {
 if (!$('#queue')) { applyLang(); return; }   /* content-only pages stop here */
 
 /* ================= helpers ================= */
-const fmt = b => { if(b==null) return '—'; if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(b<10240?1:0)+' KB'; return (b/1048576).toFixed(b<104857600?2:1)+' MB'; };
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let uid = 0; const items = []; let busy = false; const pending = [];
 function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=()=>rej(new Error('Could not load '+src)); document.head.appendChild(s); }); }
 
@@ -228,6 +253,40 @@ function draw(src,w,h,opaque,gray){
   if(cur!==src) cur.width=cur.height=0;
   return c;
 }
+/* Edits from the photo editor: rotate, flip, crop (0–1 of the rotated image), watermark */
+function drawWatermark(ctx, x0, y0, w, h, wm){
+  const text = (wm && wm.text || '').trim(); if(!text) return;
+  let fs = Math.max(10, Math.min(w,h) * (wm.size||6) / 100);
+  ctx.save(); ctx.beginPath(); ctx.rect(x0,y0,w,h); ctx.clip();
+  ctx.globalAlpha = wm.opacity==null ? .35 : wm.opacity;
+  const dark = wm.color==='black'; ctx.fillStyle = dark ? '#000' : '#fff';
+  ctx.shadowColor = dark ? 'rgba(255,255,255,.4)' : 'rgba(0,0,0,.45)'; ctx.shadowBlur = fs*.12;
+  const font = s => `700 ${s}px "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif`;
+  ctx.font = font(fs); ctx.textBaseline = 'middle';
+  if(wm.pos==='tile'){
+    ctx.translate(x0+w/2, y0+h/2); ctx.rotate(-Math.PI/6); ctx.textAlign='left';
+    const tw = ctx.measureText(text).width + fs*2.2, th = fs*3.2, R = Math.hypot(w,h)/2 + tw;
+    for(let y=-R, row=0; y<R; y+=th, row++){ for(let x=-R - (row%2)*tw/2; x<R; x+=tw) ctx.fillText(text, x, y); }
+  } else if(wm.pos==='center'){
+    const tw = ctx.measureText(text).width; if(tw > w*.9){ fs *= w*.9/tw; ctx.font = font(fs); }
+    ctx.textAlign='center'; ctx.fillText(text, x0+w/2, y0+h/2);
+  } else {
+    const tw = ctx.measureText(text).width; if(tw > w*.8){ fs *= w*.8/tw; ctx.font = font(fs); }
+    ctx.textAlign='right'; ctx.fillText(text, x0+w-fs*.7, y0+h-fs*.9);
+  }
+  ctx.restore();
+}
+function applyEdit(src, e){
+  const sw=W(src), sh=H(src), rot=(((e.rot||0)%360)+360)%360, swap=rot%180!==0;
+  const c1=document.createElement('canvas'); c1.width=swap?sh:sw; c1.height=swap?sw:sh;
+  const x=c1.getContext('2d'); x.translate(c1.width/2, c1.height/2); x.rotate(rot*Math.PI/180); if(e.flip) x.scale(-1,1); x.drawImage(src, -sw/2, -sh/2);
+  let out=c1;
+  if(e.crop){ const c=e.crop, px=Math.round(c.x*c1.width), py=Math.round(c.y*c1.height), pw=Math.max(1,Math.round(c.w*c1.width)), ph=Math.max(1,Math.round(c.h*c1.height));
+    if(px||py||pw!==c1.width||ph!==c1.height){ const c2=document.createElement('canvas'); c2.width=pw; c2.height=ph; c2.getContext('2d').drawImage(c1,px,py,pw,ph,0,0,pw,ph); c1.width=c1.height=0; out=c2; } }
+  if(e.wm && e.wm.text) drawWatermark(out.getContext('2d'), 0, 0, out.width, out.height, e.wm);
+  return out;
+}
+const hasEdit = e => !!(e && (e.rot || e.flip || e.crop || (e.wm && e.wm.text) || e.size || e.base || e.q || e.kb));
 const encode = (c,mime,q) => new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('Encoding failed. The image may be too large for this device.')), mime, q));
 async function fitTarget(src,w,h,mime,target){
   let scale=1, best=null;
@@ -252,26 +311,40 @@ function outMimeFor(file,s){
 }
 
 /* ================= processors ================= */
+async function sourceOf(it){
+  if(it.edit && it.edit.base) return it.edit.base;          /* e.g. photo with white background */
+  if(isHeic(it.file)){ const j = it.heicJpeg || (it.heicJpeg = await heicToJpeg(it.file, it)); if(!it.thumbSet){ if(it.thumb) URL.revokeObjectURL(it.thumb); it.thumb=URL.createObjectURL(j); it.thumbSet=true; } return j; }
+  return it.file;
+}
 async function processImage(it,s){
-  let input = it.file;
-  if(isHeic(it.file)){ input = it.heicJpeg || (it.heicJpeg = await heicToJpeg(it.file, it)); if(!it.thumbSet){ if(it.thumb) URL.revokeObjectURL(it.thumb); it.thumb=URL.createObjectURL(input); it.thumbSet=true; } }
-  const src=await decode(input); const ow=W(src), oh=H(src);
-  let {w,h}=dims(ow,oh,s); let mime=outMimeFor(it.file,s);
-  if(s.target && mime==='image/png' && s.format==='keep') mime='image/jpeg';
+  const e = it.edit || {};
+  const decoded = it._src || await decode(await sourceOf(it));
+  const ow=W(decoded), oh=H(decoded);
+  const src = hasEdit(e) ? applyEdit(decoded, e) : decoded;
+  if(src!==decoded && !it._src && decoded.close) decoded.close();
+  const ew=W(src), eh=H(src);
+  let w, h;
+  if(e.size){ w=e.size.w; h=e.size.h; } else ({w,h}=dims(ew,eh,s));
+  let mime = e.size ? 'image/jpeg' : outMimeFor(it.file,s);
+  const target = e.kb!=null ? e.kb*1024 : s.target, q = e.q || s.q;
+  if(target && mime==='image/png' && s.format==='keep') mime='image/jpeg';
   let blob;
-  if(s.target){ const r=await fitTarget(src,w,h,mime,s.target); blob=r.blob; w=r.w; h=r.h; }
-  else { blob=await encode(draw(src,w,h,mime!=='image/png'), mime, s.q); }
-  if(src.close) src.close();
+  if(target && !e.size){ const r=await fitTarget(src,w,h,mime,target); blob=r.blob; w=r.w; h=r.h; }
+  else if(target && e.size){ const c=draw(src,w,h,true); let lo=.12, hi=.95; blob=await encode(c,mime,.12); if(blob.size<=target){ for(let i=0;i<7;i++){ const mid=(lo+hi)/2, b=await encode(c,mime,mid); if(b.size<=target){ blob=b; lo=mid; } else hi=mid; } } }
+  else { blob=await encode(draw(src,w,h,mime!=='image/png'), mime, q); }
+  if(src!==decoded) src.width=src.height=0; else if(!it._src && src.close) src.close();
   const resized = (w!==ow||h!==oh);
-  let note = `${ow}×${oh}` + (resized?` → ${w}×${h}`:'') + ` · ${MIME_EXT[mime].toUpperCase()}`;
-  if(s.target && blob.size>s.target) note += ' · could not reach the size limit; this is the smallest possible';
-  return {blob, name: base(it.file.name)+'-compressed.'+MIME_EXT[mime], note, mustKeep: s.target>0 || s.format!=='keep' || isHeic(it.file) || (s.rs!=='none' && resized)};
+  let note = (e.passportLabel ? e.passportLabel+' · ' : '') + `${ow}×${oh}` + (resized?` → ${w}×${h}`:'') + ` · ${MIME_EXT[mime].toUpperCase()}`;
+  if(hasEdit(e) && !e.passportLabel) note += ' · edited';
+  if(target && blob.size>target) note += ' · could not reach the size limit; this is the smallest possible';
+  return {blob, name: base(it.file.name)+(e.passportLabel?'-passport.':'-compressed.')+MIME_EXT[mime], note, w, h, mustKeep: target>0 || s.format!=='keep' || isHeic(it.file) || hasEdit(e) || (s.rs!=='none' && resized)};
 }
 
 async function processPdf(it,s,progress){
   const buf = await it.file.arrayBuffer();
   if(s.pdfMode==='light'){
     const doc = await PDFLib.PDFDocument.load(buf.slice(0), {ignoreEncryption:true, updateMetadata:false});
+    if(doc.isEncrypted) throw new Error(t('pw_err'));
     doc.setProducer('PocketPress'); doc.setCreator('');
     const bytes = await doc.save({useObjectStreams:true});
     return {blob:new Blob([bytes],{type:'application/pdf'}), name:base(it.file.name)+'-compressed.pdf', note:`${doc.getPageCount()} pages · light repack, text kept`};
@@ -279,7 +352,7 @@ async function processPdf(it,s,progress){
   await needPdfJs();
   let pdf;
   try { pdf = await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0)), isEvalSupported:false}).promise; }
-  catch(e){ if(e && e.name==='PasswordException') throw new Error('This PDF is password-protected. Remove the password first.'); throw e; }
+  catch(e){ if(e && e.name==='PasswordException') throw new Error(t('pw_err')); throw e; }
   const out = await PDFLib.PDFDocument.create();
   const scale = s.dpi/72;
   for(let i=1;i<=pdf.numPages;i++){
@@ -331,9 +404,36 @@ async function processOther(it){
 }
 
 /* ================= queue ================= */
+let partyArmed = false;
 function addFiles(list, example){
-  for(const f of list){ const it={id:++uid, file:f, kind:kindOf(f), status:'queued', out:null, note:'', example:!!example}; items.push(it); pending.push(it); }
+  const added = [];
+  for(const f of list){ const it={id:++uid, file:f, kind:kindOf(f), status:'queued', out:null, note:'', example:!!example}; items.push(it); pending.push(it); added.push(it); }
+  if(!example && added.length) partyArmed = true;
+  if(window.PP && PP.onAdded) PP.onAdded(added);
   render(); pump();
+  return added;
+}
+function countSaving(it){
+  if(it.example || it.generated || it.status!=='done') return;
+  const saved = Math.max(0, it.file.size - it.out.blob.size), st = getStats();
+  st.saved += saved - (it.counted||0); if(it.counted==null) st.files++;
+  it.counted = saved; putStats(st);
+}
+function celebrate(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv=document.createElement('canvas'); cv.className='confetti'; cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio; document.body.appendChild(cv);
+  const x=cv.getContext('2d'), cs=getComputedStyle(document.documentElement), cols=['--accent','--good','--office','--bad'].map(v=>cs.getPropertyValue(v).trim()||'#E09A12');
+  const P=Array.from({length:140},()=>({x:cv.width*(.2+Math.random()*.6), y:cv.height*.35, vx:(Math.random()-.5)*16*devicePixelRatio, vy:(-6-Math.random()*12)*devicePixelRatio, r:(3+Math.random()*4)*devicePixelRatio, a:Math.random()*6, va:(Math.random()-.5)*.4, c:cols[Math.floor(Math.random()*cols.length)]}));
+  const t0=performance.now();
+  (function frame(now){ const el=now-t0; x.clearRect(0,0,cv.width,cv.height);
+    for(const p of P){ p.vy+=.45*devicePixelRatio; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.a+=p.va; x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.globalAlpha=Math.max(0,1-el/1800); x.fillStyle=p.c; x.fillRect(-p.r,-p.r/2,p.r*2,p.r); x.restore(); }
+    if(el<1800) requestAnimationFrame(frame); else cv.remove(); })(t0);
+}
+function maybeParty(){
+  if(!partyArmed || pending.length) return; partyArmed=false;
+  const done=items.filter(i=>i.status==='done' && !i.example && !i.generated);
+  const before=done.reduce((a,i)=>a+i.file.size,0), saved=before-done.reduce((a,i)=>a+i.out.blob.size,0);
+  if(saved >= 1048576 || (before && saved/before >= .5 && saved > 51200)){ celebrate(); toast(t('t_party',{size:fmt(saved)})); }
 }
 function requeueAll(){
   let n=0;
@@ -354,24 +454,42 @@ async function pump(){
       if(r.blob.size >= it.file.size && !r.mustKeep){ it.out={blob:it.file, name:it.file.name}; it.kept=true; it.note=r.note+' · '+t('kept_note'); if(it.kind==='img' && /\.png$/i.test(r.name)) it.note+=' '+t('png_tip'); }
       else { it.out={blob:r.blob, name:r.name}; it.kept=false; it.note=r.note; }
       if(it.outUrl){ URL.revokeObjectURL(it.outUrl); it.outUrl=null; }
-      it.status='done';
+      it.status='done'; countSaving(it);
     } catch(e){ console.error(e); it.status='error'; it.note = (e && e.message) ? e.message : t('t_err'); }
     if(it.dirty){ it.dirty=false; it.status='queued'; it.out=null; it.note=''; pending.push(it); }
     renderItem(it); renderSummary();
     await new Promise(r=>setTimeout(r,0));
   }
-  busy=false; renderSummary();
+  busy=false; renderSummary(); maybeParty();
 }
 
 const canShare = f => { try { return !!(navigator.canShare && navigator.canShare({files:[f]})); } catch(e){ return false; } };
 function render(){
   const q=$('#queue'); q.innerHTML='';
   if(!items.length){ q.innerHTML=`<div class="empty">${esc(t('empty'))}</div>`; }
-  for(const it of items){ const el=document.createElement('div'); el.className='item'; el.id='it'+it.id; q.appendChild(el); renderItem(it); }
+  for(const it of items){ const el=document.createElement('div'); el.className='item'; el.id='it'+it.id; el.dataset.id=it.id;
+    el.innerHTML=`<button class="grip" type="button" aria-label="${esc(t('drag'))}" title="${esc(t('drag'))}"><svg viewBox="0 0 10 16" aria-hidden="true"><circle cx="3" cy="3" r="1.4"/><circle cx="7" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="7" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="7" cy="13" r="1.4"/></svg></button><div class="item-body"></div>`;
+    q.appendChild(el); renderItem(it); }
   renderSummary();
 }
+/* first-page thumbnails for PDFs */
+let thumbChain = Promise.resolve();
+function pdfThumb(it){
+  if(it.thumbTried) return; it.thumbTried = true;
+  thumbChain = thumbChain.then(async () => {
+    try { await needPdfJs();
+      const src = it.generated ? it.out.blob : it.file;
+      const pdf = await pdfjsLib.getDocument({data:new Uint8Array(await src.arrayBuffer()), isEvalSupported:false}).promise;
+      const page = await pdf.getPage(1), vp0 = page.getViewport({scale:1}), vp = page.getViewport({scale: 120/vp0.width});
+      const c=document.createElement('canvas'); c.width=Math.ceil(vp.width); c.height=Math.ceil(vp.height); const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height);
+      await page.render({canvasContext:x, viewport:vp}).promise; it.pages = pdf.numPages; pdf.destroy();
+      const b = await encode(c,'image/png'); it.thumb = URL.createObjectURL(b); renderItem(it);
+    } catch(e){ /* password-protected or damaged: keep the PDF label */ }
+  });
+}
 function renderItem(it){
-  const el=document.getElementById('it'+it.id); if(!el) return;
+  const row=document.getElementById('it'+it.id); if(!row) return; const el=row.querySelector('.item-body');
+  if(it.kind==='pdf' && !it.thumb) pdfThumb(it);
   const label={img:'IMG',pdf:'PDF',office:ext(it.file.name).toUpperCase().slice(0,4),other:'ZIP'}[it.kind];
   if(it.kind==='img' && !it.thumb && !isHeic(it.file)){ it.thumb=URL.createObjectURL(it.file); }
   const before=it.file.size, after=it.out?it.out.blob.size:null;
@@ -382,12 +500,12 @@ function renderItem(it){
   else if(it.status==='error') pill=`<span class="pill bad">${esc(t('failed'))}</span>`;
   else if(it.kept) pill=`<span class="pill neutral">${esc(t('kept'))}</span>`;
   else pill = pct>0 ? `<span class="pill good">−${pct}%</span>` : `<span class="pill neutral">${pct===0?esc(t('same')):'+'+(-pct)+'%'}</span>`;
-  const comparable = it.kind==='img' && it.status==='done' && !it.kept && it.thumb;
+  const editable = it.kind==='img' && !it.generated;
   const done = it.status==='done';
   const shareable = done && typeof File!=='undefined' && canShare(new File([it.out.blob], it.out.name, {type:it.out.blob.type}));
   const thumb = it.thumb ? `<img alt="" src="${it.thumb}">` : label;
   el.innerHTML = `
-    ${comparable?`<button class="kind ${it.kind}" type="button" data-cmp="${it.id}" aria-label="${esc(t('compare'))}">${thumb}</button>`:`<div class="kind ${it.kind}">${thumb}</div>`}
+    ${editable?`<button class="kind ${it.kind}" type="button" data-edit="${it.id}" aria-label="${esc(t('edit'))}">${thumb}</button>`:`<div class="kind ${it.kind}">${thumb}</div>`}
     <div class="meta">
       <div class="name" title="${esc(it.file.name)}">${esc(it.out&&!it.kept?it.out.name:it.file.name)}</div>
       <div class="sizes"><span>${fmt(before)}</span><span>→</span><span class="after">${after!=null?fmt(after):'…'}</span>${pill}${it.example?`<span class="pill ex">${esc(t('example'))}</span>`:''}</div>
@@ -395,7 +513,10 @@ function renderItem(it){
       ${it.note?`<div class="note">${esc(it.note)}</div>`:''}
     </div>
     <div class="actions">
-      ${comparable?`<button class="btn sm" type="button" data-cmp="${it.id}">${esc(t('compare'))}</button>`:''}
+      ${editable?`<button class="btn sm" type="button" data-edit="${it.id}">${esc(t('edit'))}</button>`:''}
+      ${editable&&it.edit&&it.edit.passportLabel&&done?`<button class="btn sm" type="button" data-sheet="${it.id}">${esc(t('sheet'))}</button>`:''}
+      ${it.kind==='pdf'&&!it.generated?`<button class="btn sm" type="button" data-pages="${it.id}">${esc(t('pages'))}</button>`:''}
+      ${it.kind==='pdf'?`<button class="btn sm" type="button" data-lock="${it.id}">${esc(t('lock'))}</button>`:''}
       ${shareable?`<button class="btn sm" type="button" data-share="${it.id}">${esc(t('share'))}</button>`:''}
       <button class="btn sm primary" type="button" data-save="${it.id}" ${done?'':'disabled'}>${esc(t('download'))}</button>
       <button class="btn sm ghost" type="button" data-del="${it.id}" aria-label="${esc(t('remove'))}">✕</button>
@@ -413,35 +534,57 @@ function renderSummary(){
 }
 
 $('#queue').addEventListener('click', e=>{
-  const sv=e.target.closest('[data-save]'), dl=e.target.closest('[data-del]'), cm=e.target.closest('[data-cmp]'), sh=e.target.closest('[data-share]');
+  const sv=e.target.closest('[data-save]'), dl=e.target.closest('[data-del]'), sh=e.target.closest('[data-share]');
   const find = id => items.find(i=>i.id==id);
+  for(const [attr, fn] of [['edit','openEditor'],['pages','openPages'],['lock','openLock'],['sheet','printSheet']]){
+    const b=e.target.closest('[data-'+attr+']'); if(b && window.PP && PP[fn]){ const it=find(b.dataset[attr]); if(it) PP[fn](it); return; } }
   if(sv){ const it=find(sv.dataset.save); if(it&&it.out) saveBlob(it.out.name, it.out.blob); }
   if(sh){ const it=find(sh.dataset.share); if(it&&it.out){ const f=new File([it.out.blob], it.out.name, {type:it.out.blob.type}); navigator.share({files:[f], title:it.out.name}).catch(()=>{}); } }
-  if(cm){ openCompare(find(cm.dataset.cmp)); }
   if(dl){ const i=items.findIndex(x=>x.id==dl.dataset.del); if(i>-1){ const it=items[i]; if(it.thumb) URL.revokeObjectURL(it.thumb); if(it.outUrl) URL.revokeObjectURL(it.outUrl); items.splice(i,1); render(); } }
 });
 $('#clearAll').addEventListener('click',()=>{ items.forEach(i=>{ i.thumb&&URL.revokeObjectURL(i.thumb); i.outUrl&&URL.revokeObjectURL(i.outUrl); }); items.length=0; pending.length=0; render(); });
 
-/* ================= compare viewer ================= */
-function openCompare(it){
-  if(!it || !it.out) return;
-  if(!it.outUrl) it.outUrl = URL.createObjectURL(it.out.blob);
-  const m=$('#modal'); m.hidden=false;
-  $('#cmpA').src=it.thumb; $('#cmpB').src=it.outUrl;
-  $('#cmpInfo').textContent = `${fmt(it.file.size)} → ${fmt(it.out.blob.size)}`;
-  const r=$('#cmpRange'); r.value=50; $('#cmp').style.setProperty('--x','50%'); r.focus();
+/* ================= drag to reorder ================= */
+function sortable(container, sel, onDone){
+  container.addEventListener('pointerdown', e=>{
+    const h=e.target.closest('.grip'); if(!h || !container.contains(h)) return;
+    const el=h.closest(sel); if(!el || el.parentNode!==container) return;
+    e.preventDefault(); el.classList.add('dragging'); try{ h.setPointerCapture(e.pointerId); }catch(_){}
+    const move=ev=>{
+      let best=null, bd=1e9;
+      for(const o of container.querySelectorAll(sel)){ if(o===el) continue; const r=o.getBoundingClientRect(); const d=Math.hypot(ev.clientX-(r.left+r.width/2), ev.clientY-(r.top+r.height/2)); if(d<bd){ bd=d; best=o; } }
+      if(best){ const r=best.getBoundingClientRect(), wide=r.width>container.clientWidth*.6;
+        const before = wide ? ev.clientY < r.top+r.height/2 : (ev.clientY < r.top || (ev.clientY <= r.bottom && ((ev.clientX < r.left+r.width/2) !== (document.dir==='rtl'))));
+        if(before){ if(best.previousElementSibling!==el) container.insertBefore(el,best); } else if(best.nextElementSibling!==el) container.insertBefore(el,best.nextSibling); }
+      if(ev.clientY<70) scrollBy(0,-14); else if(ev.clientY>innerHeight-70) scrollBy(0,14);
+    };
+    const up=()=>{ el.classList.remove('dragging'); window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); window.removeEventListener('pointercancel',up); onDone(); };
+    window.addEventListener('pointermove',move); window.addEventListener('pointerup',up); window.addEventListener('pointercancel',up);
+  });
+  container.addEventListener('keydown', e=>{
+    const h=e.target.closest('.grip'); if(!h || !/^Arrow(Up|Down|Left|Right)$/.test(e.key)) return;
+    const el=h.closest(sel); e.preventDefault();
+    const back = e.key==='ArrowUp' || e.key===(document.dir==='rtl'?'ArrowRight':'ArrowLeft');
+    if(back && el.previousElementSibling) container.insertBefore(el, el.previousElementSibling);
+    else if(!back && el.nextElementSibling) container.insertBefore(el.nextElementSibling, el);
+    h.focus(); onDone();
+  });
 }
-$('#cmpRange').addEventListener('input', e=>$('#cmp').style.setProperty('--x', e.target.value+'%'));
-$('#cmpClose').addEventListener('click',()=>$('#modal').hidden=true);
-$('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') $('#modal').hidden=true; });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('#modal').hidden=true; });
+sortable($('#queue'), '.item', ()=>{
+  const order=[...$('#queue').querySelectorAll('.item')].map(x=>+x.dataset.id);
+  items.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));
+});
 
 /* ================= images → PDF ================= */
 function busyBtn(btn, label){ btn.disabled=true; btn.innerHTML=`<span class="spin"></span> ${esc(label)}`; }
 function resetBtn(btn, key){ btn.innerHTML=''; btn.textContent=t(key); renderSummary(); }
-function pushGenerated(blob, name, note, origTotal){
-  items.push({id:++uid, file:{name, size:origTotal, type:'application/pdf'}, kind:'pdf', status:'done', out:{blob,name}, kept:false, generated:true, note});
-  render(); toast(t('t_pdf_done'));
+function pushGenerated(blob, name, note, origTotal, kind){
+  kind = kind || 'pdf';
+  const it={id:++uid, file:{name, size:origTotal, type:blob.type}, kind, status:'done', out:{blob,name}, kept:false, generated:true, note};
+  if(kind==='img') it.thumb = URL.createObjectURL(blob);
+  items.push(it); render(); toast(t('t_pdf_done'));
+  const row=document.getElementById('it'+it.id); if(row) row.scrollIntoView({behavior:'smooth', block:'center'});
+  return it;
 }
 $('#toPdf').addEventListener('click', async ()=>{
   const imgs=items.filter(i=>i.kind==='img'); if(!imgs.length) return;
@@ -543,4 +686,9 @@ applyLang();
 if(PAGE.more) $('#more').open = true;
 takeShared().then(got => { if(!got && !launched && PAGE.example !== false) setTimeout(()=>{ if(!items.length && !launched) makeExample(); }, 150); });
 window.PocketPress = { addFiles, items };   /* handy for testing */
+Object.assign(window.PP = window.PP || {}, { items, addFiles, render, renderItem, renderSummary, pump, pending, t, toast, esc, fmt, decode, draw, encode, W, H,
+  applyEdit, drawWatermark, processImage, sourceOf, S, pushGenerated, needPdfJs, saveBlob, loadScript, ROOT, base, ext, isHeic, PAGE, celebrate, sortable,
+  lang: () => LANG,
+  reprocess(it){ if(it.status==='working'){ it.dirty=true; return; } it.status='queued'; it.out=null; it.note=''; if(!pending.includes(it)) pending.push(it); renderItem(it); pump(); } });
+if(window.PP.ready) window.PP.ready();
 })();

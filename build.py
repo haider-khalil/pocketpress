@@ -25,7 +25,7 @@ THEME = "#E09A12"
 ROOT_DIR = pathlib.Path(__file__).parent
 TODAY = datetime.date.today().isoformat()
 # Version stamp for app.js/app.css so returning visitors never mix new pages with old code
-ASSET_V = hashlib.sha1((ROOT_DIR / "assets/app.js").read_bytes() + (ROOT_DIR / "assets/app.css").read_bytes()).hexdigest()[:8]
+ASSET_V = hashlib.sha1(b"".join((ROOT_DIR / f).read_bytes() for f in ("assets/app.js", "assets/app.css", "assets/studio.js", "assets/vendor/pdf-lib.min.js"))).hexdigest()[:8]
 
 # ----------------------------------------------------------------------------
 # Tool pages. Each one opens the same tool with different starting settings,
@@ -137,6 +137,65 @@ TOOLS = [
        intro_ur="دستاویزات، رسیدوں یا نوٹس کی تصاویر سے ایک صاف PDF بنائیں۔",
        steps=["Add your images in the order you want the pages.", "Under More settings → PDF, choose A4, Letter, or page = image size.", "Press Images → one PDF, then download the new PDF at the bottom of the list."],
        faq=[("Is there a watermark?", "No. The PDF contains only your pages.")]),
+  dict(path="passport-photo", nav="Passport photo maker", tab="img", autoOpen="passport", example=False,
+       title="Passport Size Photo Maker Online Free — 35×45 mm, 2×2 inch | PocketPress",
+       desc="Make a passport or ID photo at the exact size: 35×45 mm or 2×2 inch, white background, under any KB limit, plus a print sheet with 8 copies. Free and private.",
+       h1="Passport photo maker", h1_ur="پاسپورٹ سائز تصویر بنائیں",
+       intro="Crop your photo to the exact passport size, turn the background white, fit it under the KB limit, and get a print sheet with several copies.",
+       intro_ur="تصویر کو پاسپورٹ سائز میں کراپ کریں، پس منظر سفید کریں، KB حد میں لائیں اور کئی کاپیوں والی پرنٹ شیٹ حاصل کریں۔",
+       steps=["Add a clear, front-facing photo taken against a plain wall.", "Choose the size, move the box around your head and shoulders, and tap Make background white if you need it.", "Save, then Download the photo for online forms or tap Print sheet for copies to print."],
+       faq=[("Which size should I choose?", "35×45 mm is used for Pakistani, UK, European and many other passports, ID cards and forms. 2×2 inch is for US visas and passports. Always follow the instructions of the office you are applying to."),
+            ("Is the white background done on my phone?", "Yes. A small background tool (about 6 MB) is downloaded the first time you use it and runs on your device. Your photo is never uploaded."),
+            ("How do I print it?", "Tap Print sheet to get 8 copies on one 4×6 inch (10×15 cm) photo, or more on A4. Print at 100% size, without fit-to-page, at any photo shop.")]),
+  dict(path="crop-image", nav="Crop & rotate", tab="img", autoOpen="edit", example=False,
+       title="Crop, Rotate & Flip Image Online Free | PocketPress",
+       desc="Crop photos to any shape (1:1, 4:5, 16:9, passport), rotate and flip them, then compress. Free, private, works on phones.",
+       h1="Crop, rotate and flip photos", h1_ur="تصویر کراپ کریں، گھمائیں اور پلٹیں",
+       intro="Cut out the part you need, straighten sideways photos and mirror selfies. You see the final size before you download.",
+       intro_ur="ضرورت کا حصہ کاٹیں، ٹیڑھی تصاویر سیدھی کریں اور سیلفی پلٹیں۔ ڈاؤن لوڈ سے پہلے حتمی سائز دیکھیں۔",
+       steps=["Add your photo. The editor opens automatically.", "Pick a crop shape and drag the box or its corners. Use the rotate and flip buttons if needed.", "Save changes, then download."],
+       faq=[("Can I edit a photo again?", "Yes. Tap the thumbnail or Edit any time. Your changes are kept until you clear the list.")]),
+  dict(path="add-watermark", nav="Add watermark", tab="img", autoOpen="edit-wm", example=False,
+       title="Add Watermark to Photo or CNIC Copy Online Free | PocketPress",
+       desc="Stamp text like 'Copy for bank account only' across ID card copies and photos before sharing. Repeat, centre or corner styles. Free and private.",
+       h1="Add a watermark", h1_ur="واٹر مارک لگائیں",
+       intro="Protect copies of your CNIC, passport or documents by stamping what they are for, so nobody can reuse them for something else.",
+       intro_ur="شناختی کارڈ، پاسپورٹ یا دستاویزات کی کاپی پر لکھیں کہ یہ کس مقصد کے لیے ہے، تاکہ کوئی اسے کسی اور کام کے لیے استعمال نہ کر سکے۔",
+       steps=["Add your photo or scan. The editor opens with the watermark box ready.", "Type your text, for example 'Copy for SIM verification only, 8 Nov 2026', and pick a style.", "Save, then download. Have several photos? Tap Use this watermark on all photos."],
+       faq=[("Why watermark an ID card copy?", "A watermark that says who the copy is for and the date makes it much harder for anyone to misuse your ID for something else.")]),
+  dict(path="organize-pdf", nav="Organize PDF pages", tab="pdf", autoOpen="pages", example=False,
+       title="Rotate, Delete & Reorder PDF Pages Online Free | PocketPress",
+       desc="See every page of your PDF, then rotate, remove or drag pages into a new order. Free, private, no upload.",
+       h1="Rotate, delete and reorder PDF pages", h1_ur="PDF صفحات گھمائیں، ہٹائیں اور ترتیب دیں",
+       intro="Fix sideways scans, remove blank or extra pages, and put pages in the right order.",
+       intro_ur="ٹیڑھے اسکین درست کریں، خالی یا فالتو صفحات ہٹائیں اور صفحات صحیح ترتیب میں لگائیں۔",
+       steps=["Add your PDF. The page view opens automatically.", "Tap ↻ to rotate, ✕ to remove, and drag ⠿ to move pages.", "Tap Save as new PDF, then download it from the list."],
+       faq=[("Does it change my original file?", "No. A new PDF is created and your original stays exactly as it was.")]),
+  dict(path="split-pdf", nav="Split PDF", tab="pdf", autoOpen="pages", example=False,
+       title="Split PDF Online Free — Extract Pages | PocketPress",
+       desc="Split a PDF into single pages or extract only the pages you need. Free, private, works offline.",
+       h1="Split a PDF or extract pages", h1_ur="PDF تقسیم کریں یا صفحات نکالیں",
+       intro="Get every page as its own PDF, or keep only the pages you need in a new file.",
+       intro_ur="ہر صفحہ الگ PDF میں حاصل کریں، یا صرف ضرورت کے صفحات ایک نئی فائل میں رکھیں۔",
+       steps=["Add your PDF. The page view opens automatically.", "To extract pages, remove the ones you don't want with ✕ and tap Save as new PDF.", "To split everything, tap Split into separate pages to get a .zip of single-page PDFs."],
+       faq=[("How do I take out just page 3?", "Remove all other pages with ✕, then tap Save as new PDF.")]),
+  dict(path="lock-pdf", nav="Lock PDF", tab="pdf", autoOpen="lock", example=False,
+       title="Password Protect PDF Online Free — Lock PDF | PocketPress",
+       desc="Add a password to a PDF with strong AES-256 encryption before emailing it. Free and private: the file never leaves your device.",
+       h1="Password protect a PDF", h1_ur="PDF پر پاس ورڈ لگائیں",
+       intro="Lock bank statements, salary slips and personal documents with a password before you send them.",
+       intro_ur="بینک اسٹیٹمنٹ، تنخواہ کی سلپ اور ذاتی دستاویزات بھیجنے سے پہلے پاس ورڈ سے لاک کریں۔",
+       steps=["Add your PDF.", "Type a password twice and tap Lock PDF.", "Download the locked PDF. Send the password separately, for example by phone."],
+       faq=[("How strong is the lock?", "PocketPress uses AES-256 encryption, the same standard used by Adobe Acrobat. A long password with numbers and symbols is best."),
+            ("Can I compress and lock?", "Yes. Compress first, then tap Lock. The locked file is made from the compressed version.")]),
+  dict(path="unlock-pdf", nav="Unlock PDF", tab="pdf", autoOpen="lock", example=False,
+       title="Unlock PDF — Remove PDF Password Online Free | PocketPress",
+       desc="Remove the password from a PDF you own when you know the password, so you can compress, merge or edit it. Free and private.",
+       h1="Remove a PDF password", h1_ur="PDF کا پاس ورڈ ہٹائیں",
+       intro="Have a locked bank statement or bill you need to upload? Enter its password once to save an unlocked copy.",
+       intro_ur="لاک شدہ بینک اسٹیٹمنٹ یا بل اپ لوڈ کرنا ہے؟ ایک بار پاس ورڈ لکھیں اور ان لاک کاپی محفوظ کریں۔",
+       steps=["Add the locked PDF.", "Type its password and tap Unlock PDF.", "The unlocked copy is added to the list and compressed. Download it."],
+       faq=[("Can it unlock a PDF without the password?", "No. You need to know the password. This tool is for your own files, like bank statements whose password you already have.")]),
   dict(path="compress-word", nav="Compress Word", tab="office", example=False,
        title="Compress Word Document (DOCX) Online Free | PocketPress",
        desc="Reduce the size of Word .docx files by compressing the pictures inside. Text and formatting stay the same.",
@@ -173,6 +232,9 @@ COMMON_FAQ = [
 ]
 
 # ----------------------------------------------------------------------------
+THEME_ICONS = ('<svg class="ti ti-auto" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>'
+  '<svg class="ti ti-light" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>'
+  '<svg class="ti ti-dark" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg>')
 LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><rect x="7" y="5" width="18" height="3.2" rx="1.2" fill="var(--accent-ink)"/><rect x="7" y="23.8" width="18" height="3.2" rx="1.2" fill="var(--accent-ink)"/><path d="M10.5 11.5h11v9h-11z" fill="#fff" stroke="var(--accent-ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 14.5h6M13 17.5h4" stroke="var(--accent-ink)" stroke-width="1.4" stroke-linecap="round"/></svg>'
 
 def e(s): return html.escape(s, quote=True)
@@ -202,23 +264,43 @@ def head(title, desc, canon, root, extra=""):
 <link rel="manifest" href="{root}manifest.webmanifest">
 <link rel="preload" href="{root}assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{root}assets/app.css?v={ASSET_V}">
+<script>try{{var t=localStorage.getItem("pp-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 {extra}</head>
 <body>
 <div class="wrap">
 '''
 
 def topbar(root):
-    links = "".join(f'<a class="hide-sm" href="{root}{p}/">{n}</a>' for p, n in [("compress-image-to-100kb","Image to 100 KB"),("compress-pdf","Compress PDF"),("jpg-to-pdf","JPG to PDF"),("app","Get the app")])
+    links = "".join(f'<a class="hide-sm" href="{root}{p}/">{n}</a>' for p, n in [("passport-photo","Passport photo"),("compress-pdf","Compress PDF"),("compress-image-to-100kb","Image to 100 KB"),("app","Get the app")])
     return f'''<header class="top">
   <a class="brand" href="{root}">{LOGO}<span dir="ltr">{SITE_NAME}</span></a>
-  <nav aria-label="Main">{links}<button class="btn sm primary" type="button" data-install hidden data-i18n="install">Install app</button><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
+  <nav aria-label="Main">{links}<button class="btn sm primary" type="button" data-install hidden data-i18n="install">Install app</button><button class="btn sm icon" type="button" data-theme-toggle data-mode="auto" aria-label="Theme">{THEME_ICONS}</button><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
 </header>
 '''
 
+CARD = {
+  "": "Every tool in one place", "compress-image": "Smaller JPG, PNG, WebP", "compress-image-to-100kb": "For job and admission forms",
+  "compress-image-to-50kb": "Photos and signatures", "compress-image-to-20kb": "Strictest upload limits", "compress-image-to-200kb": "ID scans and certificates",
+  "photo-for-online-form": "Photo, signature, CNIC presets", "resize-image": "Exact pixels or percent", "heic-to-jpg": "iPhone photos for any site",
+  "png-to-jpg": "Shrink screenshots", "passport-photo": "35×45 mm, white background, print sheet", "crop-image": "Crop, rotate, flip",
+  "add-watermark": "Protect ID card copies", "compress-pdf": "Smaller PDFs for email", "merge-pdf": "Join PDFs into one", "jpg-to-pdf": "Photos into one PDF",
+  "organize-pdf": "Rotate, delete, reorder pages", "split-pdf": "Extract or split pages", "lock-pdf": "Add a password", "unlock-pdf": "Remove a known password",
+  "compress-word": "Smaller .docx", "compress-powerpoint": "Smaller .pptx", "compress-excel": "Smaller .xlsx",
+}
+GROUPS = [
+  ("Photos", ["compress-image", "crop-image", "add-watermark", "resize-image", "heic-to-jpg", "png-to-jpg"]),
+  ("Forms & ID", ["passport-photo", "photo-for-online-form", "compress-image-to-100kb", "compress-image-to-50kb", "compress-image-to-20kb", "compress-image-to-200kb"]),
+  ("PDF", ["compress-pdf", "merge-pdf", "jpg-to-pdf", "organize-pdf", "split-pdf", "lock-pdf", "unlock-pdf"]),
+  ("Office & more", ["compress-word", "compress-powerpoint", "compress-excel", ""]),
+]
 def tools_list(root, current):
+    byp = {t["path"]: t for t in TOOLS}
     cur = ' aria-current="page"'
-    li = "".join(f'<li><a href="{root}{t["path"] + "/" if t["path"] else ""}"{cur if t["path"]==current else ""}>{e(t["nav"])}</a></li>' for t in TOOLS)
-    return f'<section class="tools" aria-labelledby="tl"><h2 id="tl">All tools</h2><ul>{li}</ul></section>'
+    out = []
+    for g, paths in GROUPS:
+        cards = "".join(f'<li><a href="{root}{p + "/" if p else ""}"{cur if p==current else ""}><b>{e(byp[p]["nav"])}</b><small>{e(CARD.get(p,""))}</small></a></li>' for p in paths)
+        out.append(f'<div class="tgroup"><h3>{e(g)}</h3><ul>{cards}</ul></div>')
+    return f'<section class="tools" aria-labelledby="tl"><h2 id="tl">All tools</h2><div class="tgroups">{"".join(out)}</div></section>'
 
 def footer(root):
     contact = f'<a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>' if CONTACT_EMAIL else f'<a href="{REPO_URL}/issues">Report a problem</a>'
@@ -367,13 +449,6 @@ TOOL_UI = '''
     </main>
   </div>
 
-  <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-label="Compare">
-    <div class="modal-card">
-      <div class="modal-head"><span><b id="cmpInfo"></b> · <span data-i18n="cmp_hint">Drag the slider to compare</span></span><button class="btn sm" type="button" id="cmpClose" data-i18n="close">Close</button></div>
-      <div class="cmp" id="cmp"><img id="cmpA" alt="Original"><img id="cmpB" class="over" alt="Compressed"><span class="line"></span><span class="tagl" data-i18n="cmp_orig">Original</span><span class="tagr" data-i18n="cmp_new">Compressed</span></div>
-      <input type="range" id="cmpRange" min="0" max="100" value="50" aria-label="Compare position">
-    </div>
-  </div>
 '''
 
 def faq_html(tool):
@@ -396,7 +471,7 @@ def jsonld(tool, canon):
 def tool_page(tool):
     root = rel_root(tool["path"])
     canon = SITE_URL + "/" + (tool["path"] + "/" if tool["path"] else "")
-    cfg = {k: tool[k] for k in ("tab","preset","quick","set","spot","example","more") if k in tool}
+    cfg = {k: tool[k] for k in ("tab","preset","quick","set","spot","example","more","autoOpen") if k in tool}
     steps = "".join(f"<li>{e(s)}</li>" for s in tool["steps"])
     body = head(tool["title"], tool["desc"], canon, root, jsonld(tool, canon)) + topbar(root) + f'''
   <section class="hero">
@@ -404,7 +479,8 @@ def tool_page(tool):
       <h1 data-ur="{e(tool['h1_ur'])}">{tool['h1']}</h1>
       <p class="sub" data-ur="{e(tool['intro_ur'])}">{e(tool['intro'])}</p>
     </div>
-    <div class="privacy"><b>●</b> <span data-i18n="privacy">Your files never leave your device</span></div>
+    <div class="hero-side"><div class="privacy"><b>●</b> <span data-i18n="privacy">Your files never leave your device</span></div>
+    <div class="lifetime" id="lifetime" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17l-6.1 3.5 1.5-6.8L2.2 9l6.9-.7z" fill="currentColor"/></svg><span></span></div></div>
   </section>
 ''' + TOOL_UI + f'''
   <section class="content">
@@ -416,6 +492,7 @@ def tool_page(tool):
 <script src="{root}assets/vendor/jszip.min.js"></script>
 <script src="{root}assets/vendor/pdf-lib.min.js"></script>
 <script src="{root}assets/app.js?v={ASSET_V}"></script>
+<script src="{root}assets/studio.js?v={ASSET_V}"></script>
 </body>
 </html>
 '''
@@ -560,7 +637,7 @@ def main():
                   {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]}, indent=2))
 
     # Service worker: version changes whenever any asset changes, so visitors get updates.
-    core = ["./", f"assets/app.css?v={ASSET_V}", f"assets/app.js?v={ASSET_V}", "assets/icon.svg", "manifest.webmanifest",
+    core = ["./", f"assets/app.css?v={ASSET_V}", f"assets/app.js?v={ASSET_V}", f"assets/studio.js?v={ASSET_V}", "assets/icon.svg", "manifest.webmanifest",
             "assets/example-coffee.jpg", "assets/vendor/jszip.min.js", "assets/vendor/pdf-lib.min.js", "assets/vendor/pdf.min.js", "assets/vendor/pdf.worker.min.js",
             "assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2", "assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2",
             "assets/fonts/bricolage-grotesque-latin-800-normal.woff2", "assets/fonts/bricolage-grotesque-latin-600-normal.woff2",

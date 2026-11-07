@@ -19,15 +19,20 @@ Live site: https://haider-khalil.github.io/pocketpress/
 | Simple screen | Pick a goal (Smallest / Balanced / Best quality) and an optional size limit; everything else is under **More settings**. Changes apply straight away |
 | Installable app | **Install app** button (Android, Windows, Mac) and iPhone steps on the `app/` page. Works offline, opens with its own icon and window |
 | Open files from outside | Android: Share a photo or PDF from the Gallery to PocketPress. Windows/Mac: right-click a file → Open with → PocketPress |
-| Extras | Before/after compare slider, Download all as .zip, Share on mobile, English / اردو |
+| Photo editor | Crop (free, 1:1, 4:5, 3:4, 4:3, 16:9, 35×45), rotate, flip, watermark (repeat / centre / corner) and per-photo quality, with a live preview of the final size and a before/after slider |
+| Passport photo maker | 35×45 mm, 2×2 inch, HD or custom size; optional white background (on-device AI, ~6 MB downloaded on first use); KB limit; print sheet with 8 copies on 4×6 inch or more on A4 |
+| PDF pages | Rotate, delete and drag pages into a new order; save as a new PDF or split into single pages (.zip) |
+| PDF password | Lock with AES-256, or remove a password you know so the file can be compressed |
+| Extras | Drag to reorder files (sets Merge PDF / Images → PDF order), confetti and a lifetime "you've saved X MB" counter kept on the device, light / dark / auto theme, Download all as .zip, Share on mobile, English / اردو |
 
 ## Project layout
 
 ```
 build.py               ← generates all pages; edit settings + page texts here
-assets/app.js          ← all the tool logic
+assets/app.js          ← compression, file list, settings, theme, app install
+assets/studio.js       ← photo editor, passport maker, PDF pages, PDF password
 assets/app.css         ← all the styles
-assets/vendor/         ← JSZip, pdf-lib, pdf.js, heic2any (served locally, no CDN)
+assets/vendor/         ← JSZip, pdf-lib, pdf.js, heic2any, MediaPipe (served locally, no CDN)
 assets/fonts/          ← self-hosted fonts (no Google requests)
 index.html, */index.html, sitemap.xml, robots.txt, sw.js, manifest.webmanifest  ← generated
 ```
@@ -69,4 +74,4 @@ The coffee photo shown on first visit (`assets/example-coffee.jpg`) is by Rachel
 
 ## Licenses
 
-PocketPress code: MIT (see `LICENSE`). Bundled libraries keep their own licenses: JSZip (MIT), pdf-lib (MIT), pdf.js (Apache-2.0), heic2any (MIT). Fonts: SIL Open Font License (see `assets/fonts/`).
+PocketPress code: MIT (see `LICENSE`). Bundled libraries keep their own licenses: JSZip (MIT), @cantoo/pdf-lib (MIT, a pdf-lib fork with encryption), pdf.js (Apache-2.0), heic2any (MIT), MediaPipe Selfie Segmentation (Apache-2.0). Fonts: SIL Open Font License (see `assets/fonts/`).
