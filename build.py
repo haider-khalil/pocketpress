@@ -20,7 +20,7 @@ SITE_URL  = "https://haider-khalil.github.io/pocketpress"   # no trailing slash
 BASE_PATH = "/pocketpress/"      # "/" once you use your own domain
 REPO_URL  = "https://github.com/haider-khalil/pocketpress"
 CONTACT_EMAIL = ""               # e.g. "hello@pocketpress.pk" — leave empty to use GitHub issues
-THEME = "#E09A12"
+THEME = "#D13252"
 
 ROOT_DIR = pathlib.Path(__file__).parent
 TODAY = datetime.date.today().isoformat()
@@ -35,9 +35,9 @@ TOOLS = [
   dict(path="", nav="All-in-one", tab="img",
        title="PocketPress — Free File Compressor for Images, PDF & Word",
        desc="Compress images, PDFs, Word, Excel and PowerPoint files for free. Resize photos, fit images under 100 KB, convert JPG to PDF. Files never leave your device.",
-       h1='<span dir="ltr">Pocket<span class="press">Press</span></span>', h1_ur='<span dir="ltr">Pocket<span class="press">Press</span></span>',
-       intro="Shrink, resize and convert images, PDFs and Office files. Fit a photo under an upload limit, slim a scanned PDF, or turn photos into one PDF.",
-       intro_ur="تصاویر، پی ڈی ایف اور آفس فائلوں کا سائز کم کریں۔ تصویر کو اپ لوڈ کی حد کے اندر لائیں، اسکین شدہ PDF چھوٹی کریں، یا تصاویر سے ایک PDF بنائیں۔",
+       h1='Make any file <em>smaller.</em>', h1_ur='ہر فائل کو <em>چھوٹا</em> کریں',
+       intro="Photos, PDFs and Office files, compressed in seconds. Private, instant and free.",
+       intro_ur="تصاویر، PDF اور آفس فائلیں سیکنڈوں میں چھوٹی کریں۔ محفوظ، فوری اور مفت۔",
        steps=["Drop your files in the box, or tap it to choose them.", "Pick a goal: Smallest, Balanced or Best quality. Need a photo under 100 KB? Tap the size limit. Everything else is under More settings.", "Press Download on each file, or Download all to get one .zip."],
        faq=[("What file types can I compress?", "JPG, PNG, WebP, GIF, BMP, iPhone HEIC photos, PDF, Word (.docx), Excel (.xlsx) and PowerPoint (.pptx). Any other file can be packed into a compressed .zip.")]),
   dict(path="compress-image", nav="Compress image", tab="img",
@@ -235,9 +235,46 @@ COMMON_FAQ = [
 THEME_ICONS = ('<svg class="ti ti-auto" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>'
   '<svg class="ti ti-light" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>'
   '<svg class="ti ti-dark" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg>')
-LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><rect x="7" y="5" width="18" height="3.2" rx="1.2" fill="var(--accent-ink)"/><rect x="7" y="23.8" width="18" height="3.2" rx="1.2" fill="var(--accent-ink)"/><path d="M10.5 11.5h11v9h-11z" fill="#fff" stroke="var(--accent-ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 14.5h6M13 17.5h4" stroke="var(--accent-ink)" stroke-width="1.4" stroke-linecap="round"/></svg>'
+LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><rect x="8" y="6" width="16" height="3" rx="1.5" fill="#fff"/><rect x="8" y="23" width="16" height="3" rx="1.5" fill="#fff" opacity=".55"/><rect x="11" y="12" width="10" height="8" rx="2" fill="#fff"/></svg>'
 
 def e(s): return html.escape(s, quote=True)
+
+_I = {
+ "image": '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',
+ "crop": '<path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/>',
+ "stamp": '<path d="M5 21h14"/><path d="M6 17h12v-3a2 2 0 0 0-2-2h-2.5l.8-4.2A3 3 0 1 0 9.7 7.8l.8 4.2H8a2 2 0 0 0-2 2z"/>',
+ "resize": '<path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/>',
+ "swap": '<path d="M7 7h11l-3-3"/><path d="M17 17H6l3 3"/>',
+ "person": '<rect x="4" y="3" width="16" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 19c1-3 3-4 5-4s4 1 5 4"/>',
+ "form": '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m9 14 2 2 4-4"/>',
+ "gauge": '<path d="M12 14l4-4"/><path d="M3.3 17a10 10 0 1 1 17.4 0"/>',
+ "doc": '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/>',
+ "merge": '<rect x="3" y="3" width="8" height="10" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/><path d="M11 8h4a2 2 0 0 1 2 2v1"/>',
+ "pdfimg": '<rect x="3" y="5" width="12" height="10" rx="2"/><path d="m3 13 4-4 4 4"/><path d="M15 9h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2"/>',
+ "grid": '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+ "split": '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M4 12h16" stroke-dasharray="2 2"/>',
+ "lock": '<rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+ "unlock": '<rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/>',
+ "word": '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="m8 12 1.5 5 2.5-4 2.5 4 1.5-5"/>',
+ "slides": '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 17v4M8 21h8"/><path d="M8 13V9h3a2 2 0 0 1 0 4z"/>',
+ "sheet": '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
+ "spark": '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>',
+ "shield": '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+ "bolt": '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+ "gift": '<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M12 8S10 3 7.5 4.5 9 8 12 8zm0 0s2-5 4.5-3.5S15 8 12 8z"/>',
+ "wifi": '<path d="M2 9a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16a5 5 0 0 1 6 0"/><path d="M3 3l18 18"/>',
+ "globe": '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+ "phone": '<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',
+ "upload": '<path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/>',
+ "sliders": '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+ "download": '<path d="M12 4v12"/><path d="m6 10 6 6 6-6"/><path d="M4 20h16"/>',
+}
+def icon(k, cls="ic"):
+    return f'<svg class="{cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{_I[k]}</svg>'
+TOOL_ICON = {"": "spark", "compress-image": "image", "compress-image-to-100kb": "gauge", "compress-image-to-50kb": "gauge", "compress-image-to-20kb": "gauge",
+  "compress-image-to-200kb": "gauge", "photo-for-online-form": "form", "resize-image": "resize", "heic-to-jpg": "swap", "png-to-jpg": "swap",
+  "passport-photo": "person", "crop-image": "crop", "add-watermark": "stamp", "compress-pdf": "doc", "merge-pdf": "merge", "jpg-to-pdf": "pdfimg",
+  "organize-pdf": "grid", "split-pdf": "split", "lock-pdf": "lock", "unlock-pdf": "unlock", "compress-word": "word", "compress-powerpoint": "slides", "compress-excel": "sheet"}
 
 def rel_root(path):
     return "./" if path == "" else "../" * (path.count("/") + 1)
@@ -263,19 +300,19 @@ def head(title, desc, canon, root, extra=""):
 <link rel="apple-touch-icon" href="{root}assets/icon-192.png">
 <link rel="manifest" href="{root}manifest.webmanifest">
 <link rel="preload" href="{root}assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{root}assets/fonts/plus-jakarta-sans-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{root}assets/app.css?v={ASSET_V}">
 <script>try{{var t=localStorage.getItem("pp-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 {extra}</head>
 <body>
-<div class="wrap">
 '''
 
 def topbar(root):
     links = "".join(f'<a class="hide-sm" href="{root}{p}/">{n}</a>' for p, n in [("passport-photo","Passport photo"),("compress-pdf","Compress PDF"),("compress-image-to-100kb","Image to 100 KB"),("app","Get the app")])
-    return f'''<header class="top">
+    return f'''<header class="top"><div class="wrap top-in">
   <a class="brand" href="{root}">{LOGO}<span dir="ltr">{SITE_NAME}</span></a>
   <nav aria-label="Main">{links}<button class="btn sm primary" type="button" data-install hidden data-i18n="install">Install app</button><button class="btn sm icon" type="button" data-theme-toggle data-mode="auto" aria-label="Theme">{THEME_ICONS}</button><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
-</header>
+</div></header>
 '''
 
 CARD = {
@@ -298,23 +335,26 @@ def tools_list(root, current):
     cur = ' aria-current="page"'
     out = []
     for g, paths in GROUPS:
-        cards = "".join(f'<li><a href="{root}{p + "/" if p else ""}"{cur if p==current else ""}><b>{e(byp[p]["nav"])}</b><small>{e(CARD.get(p,""))}</small></a></li>' for p in paths)
+        cards = "".join(f'<li><a href="{root}{p + "/" if p else ""}"{cur if p==current else ""}><span class="tico">{icon(TOOL_ICON.get(p,"spark"))}</span><span><b>{e(byp[p]["nav"])}</b><small>{e(CARD.get(p,""))}</small></span></a></li>' for p in paths)
         out.append(f'<div class="tgroup"><h3>{e(g)}</h3><ul>{cards}</ul></div>')
-    return f'<section class="tools" aria-labelledby="tl"><h2 id="tl">All tools</h2><div class="tgroups">{"".join(out)}</div></section>'
+    return f'<section class="band tools-band"><div class="wrap tools"><div class="sec-head"><p class="eyebrow-s">23 free tools</p><h2 id="tl">Everything you need for everyday files</h2></div><div class="tgroups">{"".join(out)}</div></div></section>'
 
 def footer(root):
     contact = f'<a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>' if CONTACT_EMAIL else f'<a href="{REPO_URL}/issues">Report a problem</a>'
-    return f'''<footer>
-  <span>© {datetime.date.today().year} {SITE_NAME} · Your files never leave your device.</span>
-  <nav aria-label="Site"><a href="{root}app/">Get the app</a><a href="{root}about/">About</a><a href="{root}privacy/">Privacy</a><a href="{root}terms/">Terms</a>{contact}<a href="{REPO_URL}">Source code</a></nav>
-</footer>
-</div>
+    col = lambda paths: "".join(f'<a href="{root}{p}/">{e(n)}</a>' for p, n in paths)
+    return f'''<footer class="foot"><div class="wrap foot-in">
+  <div class="foot-brand"><a class="brand" href="{root}">{LOGO}<span dir="ltr">{SITE_NAME}</span></a>
+    <p>Free, private tools for photos, PDFs and Office files. Everything runs on your device.</p>
+    <p class="foot-pill">{icon("shield")} <span data-i18n="privacy">Your files never leave your device</span></p></div>
+  <nav aria-label="Photo tools"><h3>Photos</h3>{col([("compress-image","Compress image"),("passport-photo","Passport photo"),("crop-image","Crop & rotate"),("add-watermark","Add watermark"),("compress-image-to-100kb","Image to 100 KB")])}</nav>
+  <nav aria-label="PDF tools"><h3>PDF</h3>{col([("compress-pdf","Compress PDF"),("merge-pdf","Merge PDF"),("jpg-to-pdf","JPG to PDF"),("organize-pdf","Organize pages"),("lock-pdf","Lock PDF")])}</nav>
+  <nav aria-label="PocketPress"><h3>PocketPress</h3>{col([("app","Get the app"),("about","About"),("privacy","Privacy"),("terms","Terms")])}{contact}<a href="{REPO_URL}">Source code</a></nav>
+</div><div class="wrap foot-bottom"><span>© {datetime.date.today().year} {SITE_NAME}</span><span>Made for everyday files</span></div></footer>
 <div class="toast" id="toast" hidden></div>
 '''
 
-TOOL_UI = '''
-  <div class="grid">
-    <aside class="panel" aria-label="Settings">
+SETTINGS_UI = '''
+      <aside class="panel settings" aria-label="Settings"><h2 class="panel-title" data-i18n="settings">Settings</h2>
       <div class="fields">
         <span class="label" data-i18n="goal">Goal</span>
         <div class="seg seg3" id="presets">
@@ -423,33 +463,33 @@ TOOL_UI = '''
       </details>
       <small class="hint" data-i18n="auto_hint">Changes apply to your files straight away.</small>
     </aside>
-
-    <main class="fields" style="gap:14px">
-      <label class="drop" id="drop" for="fileIn">
-        <strong data-i18n="drop">Drop files here or tap to choose</strong>
-        <span class="hint" data-i18n="drop_s">Add as many as you like. You can also paste a screenshot.</span>
-        <span class="types"><span class="tag">JPG</span><span class="tag">PNG</span><span class="tag">WEBP</span><span class="tag">HEIC</span><span class="tag">GIF</span><span class="tag">PDF</span><span class="tag">DOCX</span><span class="tag">XLSX</span><span class="tag">PPTX</span><span class="tag">ANY → ZIP</span></span>
-        <input type="file" id="fileIn" multiple hidden>
-      </label>
-      <div class="summary">
-        <div><span class="label" data-i18n="files">Files</span><span class="num" id="sCount">0</span></div>
-        <div><span class="label" data-i18n="before">Before</span><span class="num" id="sBefore">0 B</span></div>
-        <div><span class="label" data-i18n="after">After</span><span class="num" id="sAfter">0 B</span></div>
-        <div><span class="label" data-i18n="saved">Saved</span><span class="num good" id="sSaved">0%</span></div>
-      </div>
-      <div class="toolbar">
-        <div class="row">
-          <button class="btn" id="saveAll" type="button" disabled data-i18n="save_all">Download all (.zip)</button>
-          <button class="btn" id="toPdf" type="button" disabled data-i18n="to_pdf">Images → one PDF</button>
-          <button class="btn" id="mergePdf" type="button" disabled data-i18n="merge">Merge PDFs</button>
-        </div>
-        <button class="btn ghost sm" id="clearAll" type="button" data-i18n="clear">Clear list</button>
-      </div>
-      <div class="queue" id="queue"></div>
-    </main>
-  </div>
-
 '''
+
+QUICK_TOOLS = [("passport-photo","Passport photo"),("compress-image-to-100kb","Image to 100 KB"),("compress-pdf","Compress PDF"),("jpg-to-pdf","JPG to PDF"),("crop-image","Crop & rotate"),("lock-pdf","Lock PDF")]
+
+PRESS_ART = ('<span class="press" aria-hidden="true"><svg viewBox="0 0 140 110">'
+  '<rect class="p-rod" x="64" y="0" width="12" height="16" rx="3"/>'
+  '<g class="p-plate"><rect x="26" y="12" width="88" height="12" rx="6"/></g>'
+  '<g class="p-doc"><rect x="42" y="30" width="56" height="66" rx="9"/><path class="p-fold" d="M80 30h9a9 9 0 0 1 9 9v9H86a6 6 0 0 1-6-6z"/>'
+  '<rect class="p-line" x="52" y="58" width="36" height="5" rx="2.5"/><rect class="p-line" x="52" y="70" width="26" height="5" rx="2.5"/><rect class="p-line" x="52" y="82" width="31" height="5" rx="2.5"/></g>'
+  '<rect class="p-base" x="20" y="98" width="100" height="10" rx="5"/></svg>'
+  '<span class="p-size"><b class="p-from">4.8 MB</b><b class="p-to">412 KB</b></span></span>')
+
+HOME_SECTIONS = ('<section class="band band-soft"><div class="wrap"><div class="sec-head center"><p class="eyebrow-s">Why PocketPress</p>'
+  '<h2 data-ur="لوگ PocketPress کیوں پسند کرتے ہیں">Made for the files you deal with every day</h2></div><div class="features">' + "".join(
+  f'<div class="feat"><span class="fico">{icon(k)}</span><h3>{t}</h3><p>{d}</p></div>' for k, t, d in [
+  ("shield", "Truly private", "Files are processed on your own phone or computer. Nothing is uploaded, so your CNIC and documents stay yours."),
+  ("bolt", "Instant results", "No waiting for uploads and downloads. Most photos are done in under a second."),
+  ("gauge", "Hits any KB limit", "Need a photo under 100 KB for a form? Pick the limit and it fits, at the best possible quality."),
+  ("person", "Passport photos", "Exact 35×45 mm or 2×2 inch photos with a white background and a print sheet for the photo shop."),
+  ("wifi", "Works offline", "Install it like an app and keep using it with no internet connection."),
+  ("globe", "English and اردو", "Switch the whole site to Urdu with one tap."),
+ ]) + '</div></div></section>')
+
+APP_BAND = ('<section class="band"><div class="wrap"><div class="app-band"><div class="app-copy"><p class="eyebrow-s">Free app</p>'
+  '<h2>Take PocketPress with you</h2><p>Install it on Android, iPhone, Windows or Mac in two taps. Works offline, opens shared photos and PDFs, and updates itself.</p>'
+  '<div class="row"><button class="btn primary lg" type="button" data-install hidden data-i18n="install">Install app</button><a class="btn lg" href="{root}app/">How to install</a></div></div>'
+  '<div class="app-art" aria-hidden="true"><div class="phone"><div class="ph-top"></div><div class="ph-card"><i></i><b></b><span>−91%</span></div><div class="ph-card"><i></i><b></b><span>−76%</span></div><div class="ph-card"><i></i><b></b><span>−88%</span></div></div></div></div></div></section>')
 
 def faq_html(tool):
     rows = "".join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in tool["faq"])
@@ -472,22 +512,61 @@ def tool_page(tool):
     root = rel_root(tool["path"])
     canon = SITE_URL + "/" + (tool["path"] + "/" if tool["path"] else "")
     cfg = {k: tool[k] for k in ("tab","preset","quick","set","spot","example","more","autoOpen") if k in tool}
-    steps = "".join(f"<li>{e(s)}</li>" for s in tool["steps"])
+    steps = "".join(f"<li><span class='stepn'>{i+1}</span><span>{e(st)}</span></li>" for i, st in enumerate(tool["steps"]))
+    home = tool["path"] == ""
+    quick = "".join(f'<a href="{root}{p}/">{icon(TOOL_ICON[p])}<span>{e(n)}</span></a>' for p, n in QUICK_TOOLS if p != tool["path"])
+    sample = '' if tool.get("example") is False else '<button type="button" class="linkbtn" data-sample data-i18n="sample">Try with a sample photo</button>'
     body = head(tool["title"], tool["desc"], canon, root, jsonld(tool, canon)) + topbar(root) + f'''
-  <section class="hero">
-    <div>
-      <h1 data-ur="{e(tool['h1_ur'])}">{tool['h1']}</h1>
-      <p class="sub" data-ur="{e(tool['intro_ur'])}">{e(tool['intro'])}</p>
+<main>
+  <section class="hero{' hero-home' if home else ''}">
+    <div class="glow g1" aria-hidden="true"></div><div class="glow g2" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <p class="eyebrow rise" style="--d:0">{icon("shield")}<span data-i18n="privacy">Your files never leave your device</span></p>
+      <h1 class="rise" style="--d:1" data-ur="{e(tool['h1_ur'])}">{tool['h1']}</h1>
+      <p class="sub rise" style="--d:2" data-ur="{e(tool['intro_ur'])}">{e(tool['intro'])}</p>
+      <label class="drop rise" style="--d:3" id="drop" for="fileIn">
+        {PRESS_ART}
+        <strong data-i18n="drop">Drop files here</strong>
+        <span class="hint" data-i18n="drop_s">or choose them from your phone or computer. You can also paste a screenshot.</span>
+        <span class="btn primary lg">{icon("upload")}<span data-i18n="choose">Choose files</span></span>
+        <span class="types"><span class="tag">JPG</span><span class="tag">PNG</span><span class="tag">HEIC</span><span class="tag">WEBP</span><span class="tag">PDF</span><span class="tag">DOCX</span><span class="tag">XLSX</span><span class="tag">PPTX</span></span>
+        <input type="file" id="fileIn" multiple hidden>
+      </label>
+      <div class="hero-meta rise" style="--d:4">{sample}<div class="lifetime" id="lifetime" hidden>{icon("spark")}<span></span></div></div>
+      <nav class="quick-tools rise" style="--d:5" aria-label="Popular tools">{quick}</nav>
     </div>
-    <div class="hero-side"><div class="privacy"><b>●</b> <span data-i18n="privacy">Your files never leave your device</span></div>
-    <div class="lifetime" id="lifetime" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17l-6.1 3.5 1.5-6.8L2.2 9l6.9-.7z" fill="currentColor"/></svg><span></span></div></div>
   </section>
-''' + TOOL_UI + f'''
-  <section class="content">
-    <div class="prose"><h2>How to use it</h2><ol>{steps}</ol></div>
-    <div class="prose faq"><h2>Questions</h2>{faq_html(tool)}</div>
+
+  <section class="workspace" id="workspace" hidden>
+    <div class="wrap">
+      <div class="ws-head">
+        <div class="stats">
+          <div><span class="label" data-i18n="files">Files</span><span class="num" id="sCount">0</span></div>
+          <div><span class="label" data-i18n="before">Before</span><span class="num" id="sBefore">0 B</span></div>
+          <div><span class="label" data-i18n="after">After</span><span class="num" id="sAfter">0 B</span></div>
+          <div class="saved"><span class="label" data-i18n="saved">Saved</span><span class="num good" id="sSaved">0%</span></div>
+        </div>
+        <div class="ws-actions">
+          <button class="btn primary" id="saveAll" type="button" disabled>{icon("download")}<span data-i18n="save_all">Download all (.zip)</span></button>
+          <button class="btn" id="toPdf" type="button" disabled data-i18n="to_pdf">Images → one PDF</button>
+          <button class="btn" id="mergePdf" type="button" disabled data-i18n="merge">Merge PDFs</button>
+          <button class="btn ghost" id="clearAll" type="button" data-i18n="clear">Clear list</button>
+        </div>
+      </div>
+      <div class="ws-grid">
+        <div class="queue" id="queue"></div>
+        {SETTINGS_UI}
+      </div>
+    </div>
   </section>
+  {HOME_SECTIONS if home else ""}
+  <section class="band"><div class="wrap content">
+    <div class="prose"><p class="eyebrow-s">{"Three steps" if home else "How to use it"}</p><h2>{"How it works" if home else "Step by step"}</h2><ol class="steps">{steps}</ol></div>
+    <div class="prose faq"><p class="eyebrow-s">FAQ</p><h2>Questions</h2>{faq_html(tool)}</div>
+  </div></section>
   {tools_list(root, tool["path"])}
+  {APP_BAND.replace("{root}", root)}
+</main>
 ''' + footer(root) + f'''<script>window.PP_PAGE={json.dumps(cfg)};</script>
 <script src="{root}assets/vendor/jszip.min.js"></script>
 <script src="{root}assets/vendor/pdf-lib.min.js"></script>
@@ -593,7 +672,7 @@ PAGES = {
 def content_page(slug, title, desc, body, root=None, canon=None):
     root = root or rel_root(slug)
     canon = canon or f"{SITE_URL}/{slug}/"
-    return head(title, desc, canon, root) + topbar(root) + f'<article class="doc">{body}</article>\n  {tools_list(root, None)}\n' + footer(root) + f'<script src="{root}assets/app.js?v={ASSET_V}"></script>\n</body>\n</html>\n'
+    return head(title, desc, canon, root) + topbar(root) + f'<main><section class="band page-top"><div class="glow g1" aria-hidden="true"></div><article class="wrap doc">{body}</article></section>\n  {tools_list(root, None)}</main>\n' + footer(root) + f'<script src="{root}assets/app.js?v={ASSET_V}"></script>\n</body>\n</html>\n'
 
 # ----------------------------------------------------------------------------
 def write(rel, text):
@@ -640,7 +719,7 @@ def main():
     core = ["./", f"assets/app.css?v={ASSET_V}", f"assets/app.js?v={ASSET_V}", f"assets/studio.js?v={ASSET_V}", "assets/icon.svg", "manifest.webmanifest",
             "assets/example-coffee.jpg", "assets/vendor/jszip.min.js", "assets/vendor/pdf-lib.min.js", "assets/vendor/pdf.min.js", "assets/vendor/pdf.worker.min.js",
             "assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2", "assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2",
-            "assets/fonts/bricolage-grotesque-latin-800-normal.woff2", "assets/fonts/bricolage-grotesque-latin-600-normal.woff2",
+            "assets/fonts/plus-jakarta-sans-latin-800-normal.woff2", "assets/fonts/plus-jakarta-sans-latin-700-normal.woff2", "assets/fonts/plus-jakarta-sans-latin-600-normal.woff2",
             "assets/fonts/jetbrains-mono-latin-400-normal.woff2", "assets/fonts/jetbrains-mono-latin-600-normal.woff2"]
     core += [t["path"] + "/" for t in TOOLS if t["path"]] + [s + "/" for s in PAGES]
     h = hashlib.sha1()

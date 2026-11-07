@@ -26,7 +26,7 @@ en:{
   off_intro:'Word (.docx), Excel (.xlsx) and PowerPoint (.pptx) files get smaller by recompressing the pictures inside them. Text and layout stay untouched.',
   off_q:'Picture quality', off_max:'Shrink pictures larger than', px_long:'px on the longest side', other_hint:'Other file types are packed into a compressed .zip.',
   apply:'Apply settings to all files',
-  drop:'Drop files here or tap to choose', drop_s:'Add as many as you like. You can also paste a screenshot.',
+  drop:'Drop files here', drop_s:'or choose them from your phone or computer. You can also paste a screenshot.', choose:'Choose files', sample:'Try with a sample photo', settings:'Settings',
   files:'Files', before:'Before', after:'After', saved:'Saved',
   save_all:'Download all (.zip)', to_pdf:'Images → one PDF', merge:'Merge PDFs', clear:'Clear list',
   pg_a4:'A4 pages', pg_letter:'Letter pages', pg_fit:'Page = image size',
@@ -68,7 +68,7 @@ ur:{
   off_intro:'ورڈ، ایکسل اور پاورپوائنٹ فائلوں کے اندر موجود تصاویر کو کمپریس کر کے سائز کم کیا جاتا ہے۔ ٹیکسٹ اور ترتیب ویسے ہی رہتے ہیں۔',
   off_q:'تصویری کوالٹی', off_max:'اس سے بڑی تصاویر چھوٹی کریں', px_long:'پکسل، لمبی سائیڈ پر', other_hint:'باقی اقسام کی فائلیں کمپریسڈ .zip میں پیک ہو جاتی ہیں۔',
   apply:'سیٹنگز تمام فائلوں پر لاگو کریں',
-  drop:'فائلیں یہاں ڈالیں یا منتخب کرنے کے لیے ٹیپ کریں', drop_s:'جتنی چاہیں فائلیں شامل کریں۔ اسکرین شاٹ پیسٹ بھی کر سکتے ہیں۔',
+  drop:'فائلیں یہاں ڈالیں', drop_s:'یا فون یا کمپیوٹر سے منتخب کریں۔ اسکرین شاٹ پیسٹ بھی کر سکتے ہیں۔', choose:'فائلیں منتخب کریں', sample:'نمونے کی تصویر سے آزمائیں', settings:'سیٹنگز',
   files:'فائلیں', before:'پہلے', after:'بعد', saved:'بچت',
   save_all:'سب ڈاؤن لوڈ کریں (.zip)', to_pdf:'تصاویر سے ایک PDF', merge:'PDF جوڑیں', clear:'فہرست صاف کریں',
   pg_a4:'A4 صفحات', pg_letter:'Letter صفحات', pg_fit:'صفحہ = تصویر کا سائز',
@@ -454,7 +454,7 @@ async function pump(){
       if(r.blob.size >= it.file.size && !r.mustKeep){ it.out={blob:it.file, name:it.file.name}; it.kept=true; it.note=r.note+' · '+t('kept_note'); if(it.kind==='img' && /\.png$/i.test(r.name)) it.note+=' '+t('png_tip'); }
       else { it.out={blob:r.blob, name:r.name}; it.kept=false; it.note=r.note; }
       if(it.outUrl){ URL.revokeObjectURL(it.outUrl); it.outUrl=null; }
-      it.status='done'; countSaving(it);
+      it.status='done'; it.justDone=true; countSaving(it);
     } catch(e){ console.error(e); it.status='error'; it.note = (e && e.message) ? e.message : t('t_err'); }
     if(it.dirty){ it.dirty=false; it.status='queued'; it.out=null; it.note=''; pending.push(it); }
     renderItem(it); renderSummary();
@@ -464,10 +464,15 @@ async function pump(){
 }
 
 const canShare = f => { try { return !!(navigator.canShare && navigator.canShare({files:[f]})); } catch(e){ return false; } };
+let wsShown = false;
 function render(){
+  const ws=$('#workspace'), has=items.length>0;
+  if(ws){ ws.hidden=!has; document.body.classList.toggle('has-files', has);
+    if(has && !wsShown){ wsShown=true; ws.classList.remove('ws-in'); void ws.offsetWidth; ws.classList.add('ws-in'); setTimeout(()=>ws.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'start'}), 60); }
+    if(!has) wsShown=false; }
   const q=$('#queue'); q.innerHTML='';
   if(!items.length){ q.innerHTML=`<div class="empty">${esc(t('empty'))}</div>`; }
-  for(const it of items){ const el=document.createElement('div'); el.className='item'; el.id='it'+it.id; el.dataset.id=it.id;
+  for(const it of items){ const el=document.createElement('div'); el.className='item'+(it.shown?'':' enter'); it.shown=true; el.id='it'+it.id; el.dataset.id=it.id;
     el.innerHTML=`<button class="grip" type="button" aria-label="${esc(t('drag'))}" title="${esc(t('drag'))}"><svg viewBox="0 0 10 16" aria-hidden="true"><circle cx="3" cy="3" r="1.4"/><circle cx="7" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="7" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="7" cy="13" r="1.4"/></svg></button><div class="item-body"></div>`;
     q.appendChild(el); renderItem(it); }
   renderSummary();
@@ -509,7 +514,7 @@ function renderItem(it){
     <div class="meta">
       <div class="name" title="${esc(it.file.name)}">${esc(it.out&&!it.kept?it.out.name:it.file.name)}</div>
       <div class="sizes"><span>${fmt(before)}</span><span>→</span><span class="after">${after!=null?fmt(after):'…'}</span>${pill}${it.example?`<span class="pill ex">${esc(t('example'))}</span>`:''}</div>
-      ${done&&!it.kept?`<div class="bar" aria-hidden="true"><i style="width:${Math.max(2,Math.min(100,100-pct))}%"></i></div>`:''}
+      ${done&&!it.kept?`<div class="bar" aria-hidden="true"><i style="width:${Math.max(2,Math.min(100,100-pct))}%"></i></div>`:''}${it.status==='working'?'<div class="bar working" aria-hidden="true"><i></i></div>':''}
       ${it.note?`<div class="note">${esc(it.note)}</div>`:''}
     </div>
     <div class="actions">
@@ -521,12 +526,20 @@ function renderItem(it){
       <button class="btn sm primary" type="button" data-save="${it.id}" ${done?'':'disabled'}>${esc(t('download'))}</button>
       <button class="btn sm ghost" type="button" data-del="${it.id}" aria-label="${esc(t('remove'))}">✕</button>
     </div>`;
+  if(it.justDone){ it.justDone=false; row.classList.remove('squeeze'); void row.offsetWidth; row.classList.add('squeeze'); }
+}
+function tick(el, to, f){
+  if(!el) return; const from = el._v==null ? 0 : el._v; el._v = to;
+  if(from===to || matchMedia('(prefers-reduced-motion: reduce)').matches){ el.textContent=f(to); return; }
+  cancelAnimationFrame(el._raf); const t0=performance.now(), D=650;
+  const step=now=>{ const k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3); el.textContent=f(from+(to-from)*e); if(k<1) el._raf=requestAnimationFrame(step); };
+  el._raf=requestAnimationFrame(step);
 }
 function renderSummary(){
   const done=items.filter(i=>i.status==='done');
   const before=done.reduce((a,i)=>a+i.file.size,0), after=done.reduce((a,i)=>a+i.out.blob.size,0);
-  $('#sCount').textContent=items.length; $('#sBefore').textContent=fmt(before); $('#sAfter').textContent=fmt(after);
-  $('#sSaved').textContent = before? Math.max(0,Math.round((1-after/before)*100))+'%' : '0%';
+  tick($('#sCount'), items.length, v=>String(Math.round(v))); tick($('#sBefore'), before, fmt); tick($('#sAfter'), after, fmt);
+  tick($('#sSaved'), before? Math.max(0,Math.round((1-after/before)*100)) : 0, v=>Math.round(v)+'%');
   $('#saveAll').disabled = !done.length || busy;
   const nImg = items.filter(i=>i.kind==='img').length, nPdf = items.filter(i=>i.kind==='pdf').length;
   $('#toPdf').hidden = !nImg; $('#toPdf').disabled = busy;
@@ -654,7 +667,7 @@ window.addEventListener('paste',e=>{ const f=[...(e.clipboardData?.files||[])]; 
 async function makeExample(){
   try {
     const r = await fetch(ROOT + 'assets/example-coffee.jpg'); if(!r.ok) return;
-    const b = await r.blob(); if(items.length) return;   /* visitor already added files */
+    const b = await r.blob();
     addFiles([new File([b], 'coffee-photo.jpg', {type:'image/jpeg'})], true);
   } catch(e){}
 }
@@ -684,7 +697,8 @@ showTab(PAGE.tab || 'img');
 if(PAGE.spot && $(PAGE.spot)) $(PAGE.spot).classList.add('spot');
 applyLang();
 if(PAGE.more) $('#more').open = true;
-takeShared().then(got => { if(!got && !launched && PAGE.example !== false) setTimeout(()=>{ if(!items.length && !launched) makeExample(); }, 150); });
+takeShared();
+$$('[data-sample]').forEach(b => b.addEventListener('click', () => makeExample()));
 window.PocketPress = { addFiles, items };   /* handy for testing */
 Object.assign(window.PP = window.PP || {}, { items, addFiles, render, renderItem, renderSummary, pump, pending, t, toast, esc, fmt, decode, draw, encode, W, H,
   applyEdit, drawWatermark, processImage, sourceOf, S, pushGenerated, needPdfJs, saveBlob, loadScript, ROOT, base, ext, isHeic, PAGE, celebrate, sortable,
