@@ -20,7 +20,7 @@ SITE_URL  = "https://haider-khalil.github.io/pocketpress"   # no trailing slash
 BASE_PATH = "/pocketpress/"      # "/" once you use your own domain
 REPO_URL  = "https://github.com/haider-khalil/pocketpress"
 CONTACT_EMAIL = ""               # e.g. "hello@pocketpress.pk" — leave empty to use GitHub issues
-THEME = "#D13252"
+THEME = "#1D5BD8"
 
 ROOT_DIR = pathlib.Path(__file__).parent
 TODAY = datetime.date.today().isoformat()
