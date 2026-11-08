@@ -11,6 +11,7 @@ Edit SITE_URL / BASE_PATH when you connect your own domain, then run it again
 and commit the result. No packages needed — plain Python 3.8+.
 """
 import re, json, html, os, datetime, hashlib, pathlib
+DEV = os.environ.get("PP_DEV") == "1"   # preview build: labelled, not indexed, links point at index.html
 
 # ----------------------------------------------------------------------------
 # Site settings — change these when you get a domain
@@ -25,7 +26,10 @@ THEME = "#1D5BD8"
 ROOT_DIR = pathlib.Path(__file__).parent
 TODAY = datetime.date.today().isoformat()
 # Version stamp for app.js/app.css so returning visitors never mix new pages with old code
-ASSET_V = hashlib.sha1(b"".join((ROOT_DIR / f).read_bytes() for f in ("assets/app.js", "assets/app.css", "assets/studio.js", "assets/vendor/pdf-lib.min.js"))).hexdigest()[:8]
+def asset_version():
+    files = ("assets/app.js", "assets/app.css", "assets/studio.js", "assets/play.js", "assets/tools.js", "assets/vendor/pdf-lib.min.js")
+    return hashlib.sha1(b"".join((ROOT_DIR / f).read_bytes() for f in files if (ROOT_DIR / f).exists())).hexdigest()[:8]
+ASSET_V = asset_version()
 
 # ----------------------------------------------------------------------------
 # Tool pages. Each one opens the same tool with different starting settings,
@@ -268,6 +272,8 @@ _I = {
  "upload": '<path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/>',
  "sliders": '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
  "download": '<path d="M12 4v12"/><path d="m6 10 6 6 6-6"/><path d="M4 20h16"/>',
+ "search": '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+ "trophy": '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
 }
 def icon(k, cls="ic"):
     return f'<svg class="{cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{_I[k]}</svg>'
@@ -302,7 +308,8 @@ def head(title, desc, canon, root, extra=""):
 <link rel="preload" href="{root}assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{root}assets/fonts/plus-jakarta-sans-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{root}assets/app.css?v={ASSET_V}">
-<script>try{{var t=localStorage.getItem("pp-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
+<script>try{{var t=localStorage.getItem("pp-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}{"window.PP_DEV=1;" if DEV else ""}</script>
+{'<meta name="robots" content="noindex,nofollow">' if DEV else ''}
 {extra}</head>
 <body>
 '''
@@ -311,7 +318,7 @@ def topbar(root):
     links = "".join(f'<a class="hide-sm" href="{root}{p}/">{n}</a>' for p, n in [("passport-photo","Passport photo"),("compress-pdf","Compress PDF"),("compress-image-to-100kb","Image to 100 KB"),("app","Get the app")])
     return f'''<header class="top"><div class="wrap top-in">
   <a class="brand" href="{root}">{LOGO}<span dir="ltr">{SITE_NAME}</span></a>
-  <nav aria-label="Main">{links}<button class="btn sm primary" type="button" data-install hidden data-i18n="install">Install app</button><button class="btn sm icon" type="button" data-theme-toggle data-mode="auto" aria-label="Theme">{THEME_ICONS}</button><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
+  <nav aria-label="Main"><button class="cmdk-btn" type="button" data-cmdk aria-label="Search tools">{icon("search")}<span data-i18n="search">Search tools</span><kbd>Ctrl K</kbd></button>{links}<button class="btn sm lvl" type="button" data-stats aria-label="Your stats">{icon("trophy")}<span class="lvl-n">Lv 1</span></button><button class="btn sm primary" type="button" data-install hidden data-i18n="install">Install app</button><button class="btn sm icon" type="button" data-theme-toggle data-mode="auto" aria-label="Theme">{THEME_ICONS}</button><button class="btn sm" type="button" data-lang-toggle data-i18n="lang">اردو</button></nav>
 </div></header>
 '''
 
@@ -335,7 +342,7 @@ def tools_list(root, current):
     cur = ' aria-current="page"'
     out = []
     for g, paths in GROUPS:
-        cards = "".join(f'<li><a href="{root}{p + "/" if p else ""}"{cur if p==current else ""}><span class="tico">{icon(TOOL_ICON.get(p,"spark"))}</span><span><b>{e(byp[p]["nav"])}</b><small>{e(CARD.get(p,""))}</small></span></a></li>' for p in paths)
+        cards = "".join(f'<li><a class="spot" href="{root}{p + "/" if p else ""}"{cur if p==current else ""}><span class="tico">{icon(TOOL_ICON.get(p,"spark"))}</span><span><b>{e(byp[p]["nav"])}</b><small>{e(CARD.get(p,""))}</small></span></a></li>' for p in paths)
         out.append(f'<div class="tgroup"><h3>{e(g)}</h3><ul>{cards}</ul></div>')
     return f'<section class="band tools-band"><div class="wrap tools"><div class="sec-head"><p class="eyebrow-s">23 free tools</p><h2 id="tl">Everything you need for everyday files</h2></div><div class="tgroups">{"".join(out)}</div></div></section>'
 
@@ -351,6 +358,7 @@ def footer(root):
   <nav aria-label="PocketPress"><h3>PocketPress</h3>{col([("app","Get the app"),("about","About"),("privacy","Privacy"),("terms","Terms")])}{contact}<a href="{REPO_URL}">Source code</a></nav>
 </div><div class="wrap foot-bottom"><span>© {datetime.date.today().year} {SITE_NAME}</span><span>Made for everyday files</span></div></footer>
 <div class="toast" id="toast" hidden></div>
+{'<div class="dev-ribbon">Preview build · not live</div>' if DEV else ''}
 '''
 
 SETTINGS_UI = '''
@@ -471,7 +479,7 @@ PRESS_ART = '<span class="press" aria-hidden="true"><svg viewBox="0 0 200 150"><
 
 HOME_SECTIONS = ('<section class="band band-soft"><div class="wrap"><div class="sec-head center"><p class="eyebrow-s">Why PocketPress</p>'
   '<h2 data-ur="لوگ PocketPress کیوں پسند کرتے ہیں">Made for the files you deal with every day</h2></div><div class="features">' + "".join(
-  f'<div class="feat"><span class="fico">{icon(k)}</span><h3>{t}</h3><p>{d}</p></div>' for k, t, d in [
+  f'<div class="feat spot"><span class="fico">{icon(k)}</span><h3>{t}</h3><p>{d}</p></div>' for k, t, d in [
   ("shield", "Truly private", "Files are processed on your own phone or computer. Nothing is uploaded, so your CNIC and documents stay yours."),
   ("bolt", "Instant results", "No waiting for uploads and downloads. Most photos are done in under a second."),
   ("gauge", "Hits any KB limit", "Need a photo under 100 KB for a form? Pick the limit and it fits, at the best possible quality."),
@@ -518,7 +526,7 @@ def tool_page(tool):
       <p class="eyebrow rise" style="--d:0">{icon("shield")}<span data-i18n="privacy">Your files never leave your device</span></p>
       <h1 class="rise" style="--d:1" data-ur="{e(tool['h1_ur'])}">{tool['h1']}</h1>
       <p class="sub rise" style="--d:2" data-ur="{e(tool['intro_ur'])}">{e(tool['intro'])}</p>
-      <label class="drop rise" style="--d:3" id="drop" for="fileIn">
+      <label class="drop spot rise" style="--d:3" id="drop" for="fileIn">
         {PRESS_ART}
         <strong data-i18n="drop">Drop files here</strong>
         <span class="hint" data-i18n="drop_s">or choose them from your phone or computer. You can also paste a screenshot.</span>
@@ -547,6 +555,7 @@ def tool_page(tool):
           <button class="btn ghost" id="clearAll" type="button" data-i18n="clear">Clear list</button>
         </div>
       </div>
+      <div class="suggest" id="suggest" hidden></div>
       <div class="ws-grid">
         <div class="queue" id="queue"></div>
         {SETTINGS_UI}
@@ -566,6 +575,8 @@ def tool_page(tool):
 <script src="{root}assets/vendor/pdf-lib.min.js"></script>
 <script src="{root}assets/app.js?v={ASSET_V}"></script>
 <script src="{root}assets/studio.js?v={ASSET_V}"></script>
+<script src="{root}assets/tools.js?v={ASSET_V}"></script>
+<script src="{root}assets/play.js?v={ASSET_V}"></script>
 </body>
 </html>
 '''
@@ -666,15 +677,32 @@ PAGES = {
 def content_page(slug, title, desc, body, root=None, canon=None):
     root = root or rel_root(slug)
     canon = canon or f"{SITE_URL}/{slug}/"
-    return head(title, desc, canon, root) + topbar(root) + f'<main><section class="band page-top"><div class="glow g1" aria-hidden="true"></div><article class="wrap doc">{body}</article></section>\n  {tools_list(root, None)}</main>\n' + footer(root) + f'<script src="{root}assets/app.js?v={ASSET_V}"></script>\n</body>\n</html>\n'
+    return head(title, desc, canon, root) + topbar(root) + f'<main><section class="band page-top"><div class="glow g1" aria-hidden="true"></div><article class="wrap doc">{body}</article></section>\n  {tools_list(root, None)}</main>\n' + footer(root) + f'<script src="{root}assets/app.js?v={ASSET_V}"></script>\n<script src="{root}assets/tools.js?v={ASSET_V}"></script>\n<script src="{root}assets/play.js?v={ASSET_V}"></script>\n</body>\n</html>\n'
 
 # ----------------------------------------------------------------------------
+def _dev_links(text):
+    # in the preview host, folders don't serve index.html automatically, so point links at it
+    return re.sub(r'href="([^":?#]*/)"', lambda m: f'href="{m.group(1)}index.html"', text)
 def write(rel, text):
+    if DEV and rel.endswith(".html"): text = _dev_links(text)
     p = ROOT_DIR / rel
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(text, encoding="utf-8")
 
+TOOL_KEYS = {
+  "": "home all compress shrink reduce", "compress-image": "photo picture jpg jpeg png webp shrink reduce size", "compress-image-to-100kb": "100kb form job admission limit photo",
+  "compress-image-to-50kb": "50kb signature limit", "compress-image-to-20kb": "20kb signature thumb limit", "compress-image-to-200kb": "200kb cnic id scan certificate",
+  "photo-for-online-form": "form photo signature cnic nadra job admission", "resize-image": "resize width height pixels dimensions", "heic-to-jpg": "iphone heic convert jpg",
+  "png-to-jpg": "png convert jpg screenshot", "passport-photo": "passport visa id cnic 35x45 2x2 white background print", "crop-image": "crop rotate flip cut straighten",
+  "add-watermark": "watermark stamp text cnic copy protect", "compress-pdf": "pdf shrink reduce email scan", "merge-pdf": "merge join combine pdf",
+  "jpg-to-pdf": "images photos to pdf scan convert", "organize-pdf": "rotate delete reorder pages pdf", "split-pdf": "split extract pages pdf",
+  "lock-pdf": "password protect encrypt pdf secure", "unlock-pdf": "remove password decrypt pdf", "compress-word": "word docx document",
+  "compress-powerpoint": "powerpoint pptx slides presentation", "compress-excel": "excel xlsx sheet spreadsheet"}
 def main():
+    global ASSET_V
+    tools_data = [{"p": t["path"], "n": t["nav"], "d": CARD.get(t["path"], ""), "k": TOOL_KEYS.get(t["path"], ""), "i": icon(TOOL_ICON.get(t["path"], "spark"))} for t in TOOLS]
+    write("assets/tools.js", "/* generated by build.py */\nwindow.PP_TOOLS=" + json.dumps(tools_data, ensure_ascii=False) + ";\nwindow.PP_SITE=" + json.dumps(SITE_URL.split("://")[-1]) + ";\n")
+    ASSET_V = asset_version()
     for tl in TOOLS:
         write((tl["path"] + "/index.html") if tl["path"] else "index.html", tool_page(tl))
     for slug, (title, desc, body) in PAGES.items():
@@ -710,7 +738,7 @@ def main():
                   {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]}, indent=2))
 
     # Service worker: version changes whenever any asset changes, so visitors get updates.
-    core = ["./", f"assets/app.css?v={ASSET_V}", f"assets/app.js?v={ASSET_V}", f"assets/studio.js?v={ASSET_V}", "assets/icon.svg", "manifest.webmanifest",
+    core = ["./", f"assets/app.css?v={ASSET_V}", f"assets/app.js?v={ASSET_V}", f"assets/studio.js?v={ASSET_V}", f"assets/tools.js?v={ASSET_V}", f"assets/play.js?v={ASSET_V}", "assets/icon.svg", "manifest.webmanifest",
             "assets/example-coffee.jpg", "assets/vendor/jszip.min.js", "assets/vendor/pdf-lib.min.js", "assets/vendor/pdf.min.js", "assets/vendor/pdf.worker.min.js",
             "assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2", "assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2",
             "assets/fonts/plus-jakarta-sans-latin-800-normal.woff2", "assets/fonts/plus-jakarta-sans-latin-700-normal.woff2", "assets/fonts/plus-jakarta-sans-latin-600-normal.woff2",

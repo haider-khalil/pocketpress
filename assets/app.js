@@ -3,6 +3,8 @@
 'use strict';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const PAGE = window.PP_PAGE || {};
+const bus = window.PPBus = window.PPBus || new EventTarget();
+const emit = (type, detail) => { try { bus.dispatchEvent(new CustomEvent(type, {detail: detail||{}})); } catch(e){} };
 const ROOT = document.documentElement.dataset.root || './';
 
 /* ================= i18n ================= */
@@ -47,6 +49,7 @@ en:{
   th_auto:'Theme: automatic', th_light:'Theme: light', th_dark:'Theme: dark',
   life:'You have saved {size} across {n} files with PocketPress', t_party:'Nice! You just saved {size}.',
   pw_err:'This PDF has a password. Tap Lock to remove it first, then compress.',
+  search:'Search tools', undo:'Undo', t_removed:'Removed {n}', t_cleared:'List cleared', score:'Squeeze score',
   lang:'اردو'
 },
 ur:{
@@ -89,6 +92,7 @@ ur:{
   th_auto:'تھیم: خودکار', th_light:'تھیم: روشن', th_dark:'تھیم: گہرا',
   life:'آپ PocketPress سے {n} فائلوں میں {size} بچا چکے ہیں', t_party:'زبردست! آپ نے ابھی {size} بچائے۔',
   pw_err:'اس PDF پر پاس ورڈ ہے۔ پہلے لاک بٹن سے پاس ورڈ ہٹائیں، پھر کمپریس کریں۔',
+  search:'ٹولز تلاش کریں', undo:'واپس', t_removed:'{n} ہٹا دی گئی', t_cleared:'فہرست صاف ہو گئی', score:'اسکویز اسکور',
   lang:'English'
 }};
 let LANG = 'en';
@@ -104,10 +108,10 @@ function applyLang(){
   if ($('#pdfModeHint')) setPdfMode(pdfMode, true);
   setTheme(getTheme()); showStats();
 }
-$$('[data-lang-toggle]').forEach(b => b.addEventListener('click', () => { LANG = LANG==='ur'?'en':'ur'; try{localStorage.setItem('pp-lang',LANG);}catch(e){} applyLang(); }));
+$$('[data-lang-toggle]').forEach(b => b.addEventListener('click', () => { LANG = LANG==='ur'?'en':'ur'; try{localStorage.setItem('pp-lang',LANG);}catch(e){} emit('lang',{lang:LANG}); applyLang(); }));
 
 /* ================= service worker (offline) ================= */
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+if ('serviceWorker' in navigator && location.protocol.startsWith('http') && !window.PP_DEV) {
   window.addEventListener('load', () => navigator.serviceWorker.register(ROOT + 'sw.js').catch(()=>{}));
 }
 
@@ -122,14 +126,18 @@ function setTheme(th){
   try { th==='auto' ? localStorage.removeItem('pp-theme') : localStorage.setItem('pp-theme', th); } catch(e){}
   $$('[data-theme-toggle]').forEach(b => { b.dataset.mode = th; b.setAttribute('aria-label', t('th_'+th)); b.title = t('th_'+th); });
 }
-$$('[data-theme-toggle]').forEach(b => b.addEventListener('click', () => setTheme(THEMES[(THEMES.indexOf(getTheme())+1)%3])));
+$$('[data-theme-toggle]').forEach(b => b.addEventListener('click', () => { const th=THEMES[(THEMES.indexOf(getTheme())+1)%3]; setTheme(th); emit('theme',{mode:th, dark: th==='dark' || (th==='auto' && matchMedia('(prefers-color-scheme: dark)').matches)}); }));
 
 /* ================= lifetime savings (kept on this device only) ================= */
 function getStats(){ try { return JSON.parse(localStorage.getItem('pp-stats')) || {saved:0, files:0}; } catch(e){ return {saved:0, files:0}; } }
 function putStats(st){ try { localStorage.setItem('pp-stats', JSON.stringify(st)); } catch(e){} showStats(); }
 function showStats(){ const el=$('#lifetime'); if(!el) return; const st=getStats(); el.hidden = !(st.saved > 0); if(st.saved>0) el.querySelector('span').textContent = t('life', {size:fmt(st.saved), n:st.files}); }
 
-let tt; function toast(msg){ const el=$('#toast'); if(!el) return; el.textContent=msg; el.hidden=false; clearTimeout(tt); tt=setTimeout(()=>el.hidden=true,3600); }
+let tt; function toast(msg, action){
+  const el=$('#toast'); if(!el) return; el.innerHTML=''; const sp=document.createElement('span'); sp.textContent=msg; el.appendChild(sp);
+  if(action){ const b=document.createElement('button'); b.type='button'; b.className='toast-act'; b.textContent=action.label; b.addEventListener('click',()=>{ el.hidden=true; clearTimeout(tt); action.fn(); }); el.appendChild(b); }
+  el.hidden=false; el.style.animation='none'; void el.offsetWidth; el.style.animation=''; clearTimeout(tt); tt=setTimeout(()=>{ el.hidden=true; if(action && action.expire) action.expire(); }, action?6000:3600);
+}
 
 /* ================= install as an app ================= */
 const STANDALONE = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
@@ -137,12 +145,12 @@ const IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform
 let installEvt = null;
 const showInstall = on => $$('[data-install]').forEach(b => b.hidden = !on);
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; showInstall(true); });
-window.addEventListener('appinstalled', () => { installEvt = null; showInstall(false); toast(t('t_installed')); });
+window.addEventListener('appinstalled', () => { installEvt = null; showInstall(false); toast(t('t_installed')); emit('install'); });
 if (!STANDALONE && IOS) showInstall(true);
 if (STANDALONE && $('#installedNote')) $('#installedNote').hidden = false;
 $$('[data-install]').forEach(b => b.addEventListener('click', async () => {
   if (installEvt) { installEvt.prompt(); const r = await installEvt.userChoice.catch(()=>null); if (r && r.outcome === 'accepted') { installEvt = null; showInstall(false); } return; }
-  const target = ROOT + 'app/' + (IOS ? '#iphone' : '');
+  const target = ROOT + 'app/' + (window.PP_DEV ? 'index.html' : '') + (IOS ? '#iphone' : '');
   if (location.pathname.replace(/index\.html$/,'').endsWith('/app/')) { const el = document.getElementById(IOS?'iphone':'') ; if (el) el.scrollIntoView({behavior:'smooth'}); }
   else location.href = target;
 }));
@@ -356,7 +364,7 @@ async function processPdf(it,s,progress){
   const out = await PDFLib.PDFDocument.create();
   const scale = s.dpi/72;
   for(let i=1;i<=pdf.numPages;i++){
-    progress(t('page_n',{i, n:pdf.numPages}));
+    progress(t('page_n',{i, n:pdf.numPages}), (i-1)/pdf.numPages);
     const page = await pdf.getPage(i);
     const vp1 = page.getViewport({scale:1});
     let k = scale; const maxPx = 4200; if(vp1.width*k>maxPx || vp1.height*k>maxPx) k = maxPx/Math.max(vp1.width,vp1.height);
@@ -382,7 +390,7 @@ async function processOffice(it,s,progress){
   const media = Object.keys(zip.files).filter(p=>/^(word|ppt|xl)\/media\/[^/]+\.(jpe?g|png)$/i.test(p));
   let changed=0;
   for(let i=0;i<media.length;i++){
-    const path=media[i]; progress(t('pic_n',{i:i+1,n:media.length}));
+    const path=media[i]; progress(t('pic_n',{i:i+1,n:media.length}), i/Math.max(1,media.length));
     const orig = await zip.file(path).async('blob');
     let src; try { src = await decode(orig); } catch(e){ continue; }
     const w=W(src), h=H(src); const k=Math.min(1, s.offMax/Math.max(w,h)); const nw=Math.round(w*k), nh=Math.round(h*k);
@@ -392,7 +400,7 @@ async function processOffice(it,s,progress){
     if(src.close) src.close();
     if(b.size < orig.size){ zip.file(path, b, {binary:true}); changed++; }
   }
-  progress(t('repack'));
+  progress(t('repack'), .95);
   const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:9}, mimeType:it.file.type||'application/octet-stream'});
   return {blob, name: base(it.file.name)+'-compressed.'+ext(it.file.name), note: media.length ? `${changed} of ${media.length} picture${media.length>1?'s':''} recompressed` : 'No pictures inside · repacked only'};
 }
@@ -404,11 +412,11 @@ async function processOther(it){
 }
 
 /* ================= queue ================= */
-let partyArmed = false;
+let partyArmed = false, batchN = 0;
 function addFiles(list, example){
   const added = [];
   for(const f of list){ const it={id:++uid, file:f, kind:kindOf(f), status:'queued', out:null, note:'', example:!!example}; items.push(it); pending.push(it); added.push(it); }
-  if(!example && added.length) partyArmed = true;
+  if(!example && added.length){ partyArmed = true; batchN += added.length; }
   if(window.PP && PP.onAdded) PP.onAdded(added);
   render(); pump();
   return added;
@@ -417,7 +425,8 @@ function countSaving(it){
   if(it.example || it.generated || it.status!=='done') return;
   const saved = Math.max(0, it.file.size - it.out.blob.size), st = getStats();
   st.saved += saved - (it.counted||0); if(it.counted==null) st.files++;
-  it.counted = saved; putStats(st);
+  const first = it.counted==null; it.counted = saved; putStats(st);
+  emit('file-done', {kind:it.kind, before:it.file.size, after:it.out.blob.size, saved, first, target: S().target, edit: it.edit||null, kept: !!it.kept});
 }
 function celebrate(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -430,7 +439,8 @@ function celebrate(){
     if(el<1800) requestAnimationFrame(frame); else cv.remove(); })(t0);
 }
 function maybeParty(){
-  if(!partyArmed || pending.length) return; partyArmed=false;
+  if(!partyArmed || pending.length) return; partyArmed=false; const n=batchN; batchN=0;
+  emit('batch-done', {count:n});
   const done=items.filter(i=>i.status==='done' && !i.example && !i.generated);
   const before=done.reduce((a,i)=>a+i.file.size,0), saved=before-done.reduce((a,i)=>a+i.out.blob.size,0);
   if(saved >= 1048576 || (before && saved/before >= .5 && saved > 51200)){ celebrate(); toast(t('t_party',{size:fmt(saved)})); }
@@ -450,7 +460,7 @@ async function pump(){
     const s=S();
     try {
       const fn = {img:processImage, pdf:processPdf, office:processOffice, other:processOther}[it.kind];
-      const r = await fn(it, s, msg=>{ it.progress=msg; renderItem(it); });
+      it.prog = null; const r = await fn(it, s, (msg, f)=>{ it.progress=msg; if(f!=null) it.prog=f; renderItem(it); });
       if(r.blob.size >= it.file.size && !r.mustKeep){ it.out={blob:it.file, name:it.file.name}; it.kept=true; it.note=r.note+' · '+t('kept_note'); if(it.kind==='img' && /\.png$/i.test(r.name)) it.note+=' '+t('png_tip'); }
       else { it.out={blob:r.blob, name:r.name}; it.kept=false; it.note=r.note; }
       if(it.outUrl){ URL.revokeObjectURL(it.outUrl); it.outUrl=null; }
@@ -472,7 +482,7 @@ function render(){
     if(!has) wsShown=false; }
   const q=$('#queue'); q.innerHTML='';
   if(!items.length){ q.innerHTML=`<div class="empty">${esc(t('empty'))}</div>`; }
-  for(const it of items){ const el=document.createElement('div'); el.className='item'+(it.shown?'':' enter'); it.shown=true; el.id='it'+it.id; el.dataset.id=it.id;
+  for(const it of items){ const el=document.createElement('div'); el.className='item spot'+(it.shown?'':' enter'); it.shown=true; el.id='it'+it.id; el.dataset.id=it.id;
     el.innerHTML=`<button class="grip" type="button" aria-label="${esc(t('drag'))}" title="${esc(t('drag'))}"><svg viewBox="0 0 10 16" aria-hidden="true"><circle cx="3" cy="3" r="1.4"/><circle cx="7" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="7" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="7" cy="13" r="1.4"/></svg></button><div class="item-body"></div>`;
     q.appendChild(el); renderItem(it); }
   renderSummary();
@@ -492,6 +502,7 @@ function pdfThumb(it){
     } catch(e){ /* password-protected or damaged: keep the PDF label */ }
   });
 }
+const gradeOf = pct => pct>=85 ? {g:'A+',c:'ap'} : pct>=65 ? {g:'A',c:'a'} : pct>=40 ? {g:'B',c:'b'} : {g:'C',c:'c'};
 function renderItem(it){
   const row=document.getElementById('it'+it.id); if(!row) return; const el=row.querySelector('.item-body');
   if(it.kind==='pdf' && !it.thumb) pdfThumb(it);
@@ -510,7 +521,9 @@ function renderItem(it){
   const shareable = done && typeof File!=='undefined' && canShare(new File([it.out.blob], it.out.name, {type:it.out.blob.type}));
   const thumb = it.thumb ? `<img alt="" src="${it.thumb}">` : label;
   el.innerHTML = `
-    ${editable?`<button class="kind ${it.kind}" type="button" data-edit="${it.id}" aria-label="${esc(t('edit'))}">${thumb}</button>`:`<div class="kind ${it.kind}">${thumb}</div>`}
+    <div class="kwrap">${editable?`<button class="kind ${it.kind}" type="button" data-edit="${it.id}" aria-label="${esc(t('edit'))}">${thumb}</button>`:`<div class="kind ${it.kind}">${thumb}</div>`}
+      ${it.status==='working' ? (it.prog!=null ? `<span class="ring" aria-hidden="true"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15"/><circle class="rp" cx="18" cy="18" r="15" style="stroke-dashoffset:${(94.25*(1-Math.min(1,it.prog))).toFixed(1)}"/></svg><b>${Math.round(Math.min(1,it.prog)*100)}%</b></span>` : '<span class="shimmer" aria-hidden="true"></span>') : ''}
+      ${done && !it.kept && !it.generated && pct>=5 ? `<span class="grade g-${gradeOf(pct).c}" title="${esc(t('score'))}: ${gradeOf(pct).g}">${gradeOf(pct).g}</span>` : ''}</div>
     <div class="meta">
       <div class="name" title="${esc(it.file.name)}">${esc(it.out&&!it.kept?it.out.name:it.file.name)}</div>
       <div class="sizes"><span>${fmt(before)}</span><span>→</span><span class="after">${after!=null?fmt(after):'…'}</span>${pill}${it.example?`<span class="pill ex">${esc(t('example'))}</span>`:''}</div>
@@ -553,9 +566,13 @@ $('#queue').addEventListener('click', e=>{
     const b=e.target.closest('[data-'+attr+']'); if(b && window.PP && PP[fn]){ const it=find(b.dataset[attr]); if(it) PP[fn](it); return; } }
   if(sv){ const it=find(sv.dataset.save); if(it&&it.out) saveBlob(it.out.name, it.out.blob); }
   if(sh){ const it=find(sh.dataset.share); if(it&&it.out){ const f=new File([it.out.blob], it.out.name, {type:it.out.blob.type}); navigator.share({files:[f], title:it.out.name}).catch(()=>{}); } }
-  if(dl){ const i=items.findIndex(x=>x.id==dl.dataset.del); if(i>-1){ const it=items[i]; if(it.thumb) URL.revokeObjectURL(it.thumb); if(it.outUrl) URL.revokeObjectURL(it.outUrl); items.splice(i,1); render(); } }
+  if(dl){ const i=items.findIndex(x=>x.id==dl.dataset.del); if(i>-1){ const it=items[i]; items.splice(i,1); const pi=pending.indexOf(it); if(pi>-1) pending.splice(pi,1); render();
+    toast(t('t_removed',{n:it.out&&!it.kept?it.out.name:it.file.name}), {label:t('undo'), fn(){ items.splice(Math.min(i,items.length),0,it); if(it.status!=='done' && it.status!=='error'){ it.status='queued'; pending.push(it); } render(); pump(); },
+      expire(){ if(!items.includes(it)){ if(it.thumb) URL.revokeObjectURL(it.thumb); if(it.outUrl) URL.revokeObjectURL(it.outUrl); } }}); } }
 });
-$('#clearAll').addEventListener('click',()=>{ items.forEach(i=>{ i.thumb&&URL.revokeObjectURL(i.thumb); i.outUrl&&URL.revokeObjectURL(i.outUrl); }); items.length=0; pending.length=0; render(); });
+$('#clearAll').addEventListener('click',()=>{ const old=items.slice(); items.length=0; pending.length=0; render();
+  toast(t('t_cleared'), {label:t('undo'), fn(){ items.push(...old); for(const it of old) if(it.status!=='done' && it.status!=='error'){ it.status='queued'; pending.push(it); } render(); pump(); },
+    expire(){ for(const i of old) if(!items.includes(i)){ i.thumb&&URL.revokeObjectURL(i.thumb); i.outUrl&&URL.revokeObjectURL(i.outUrl); } }}); });
 
 /* ================= drag to reorder ================= */
 function sortable(container, sel, onDone){
@@ -616,7 +633,7 @@ $('#toPdf').addEventListener('click', async ()=>{
     }
     doc.setProducer('PocketPress');
     const out=await doc.save();
-    pushGenerated(new Blob([out],{type:'application/pdf'}), 'combined-images.pdf', `${imgs.length} image${imgs.length>1?'s':''} combined · ${size==='fit'?'page = image size':size.toUpperCase()+' pages'}`, imgs.reduce((a,i)=>a+i.file.size,0));
+    emit('merge',{type:'images'}); pushGenerated(new Blob([out],{type:'application/pdf'}), 'combined-images.pdf', `${imgs.length} image${imgs.length>1?'s':''} combined · ${size==='fit'?'page = image size':size.toUpperCase()+' pages'}`, imgs.reduce((a,i)=>a+i.file.size,0));
   } catch(e){ console.error(e); toast('Could not build the PDF: '+(e.message||e)); }
   resetBtn(btn,'to_pdf');
 });
@@ -635,13 +652,16 @@ $('#mergePdf').addEventListener('click', async ()=>{
     }
     out.setProducer('PocketPress');
     const bytes=await out.save({useObjectStreams:true});
-    pushGenerated(new Blob([bytes],{type:'application/pdf'}), 'merged.pdf', `${pdfs.length} PDFs merged in list order · ${pages} pages`, pdfs.reduce((a,i)=>a+i.file.size,0));
+    emit('merge',{type:'pdf'}); pushGenerated(new Blob([bytes],{type:'application/pdf'}), 'merged.pdf', `${pdfs.length} PDFs merged in list order · ${pages} pages`, pdfs.reduce((a,i)=>a+i.file.size,0));
   } catch(e){ console.error(e); toast('Could not merge: '+(e.message||e)); }
   resetBtn(btn,'merge');
 });
 
 /* ================= saving ================= */
-function saveBlob(name, blob){
+async function saveBlob(name, blob){
+  if(window.claude && typeof window.claude.use==='function'){
+    try { const d = await window.claude.use('downloads'); if(d){ await d.save({filename:name, data:blob}); toast(t('t_saved',{n:name})); return; } } catch(e){ if(e && e.code==='declined') return; }
+  }
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.rel='noopener';
   document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},8000);
   toast(t('t_saved',{n:name}));
@@ -700,7 +720,7 @@ if(PAGE.more) $('#more').open = true;
 takeShared();
 $$('[data-sample]').forEach(b => b.addEventListener('click', () => makeExample()));
 window.PocketPress = { addFiles, items };   /* handy for testing */
-Object.assign(window.PP = window.PP || {}, { items, addFiles, render, renderItem, renderSummary, pump, pending, t, toast, esc, fmt, decode, draw, encode, W, H,
+Object.assign(window.PP = window.PP || {}, { emit, items, addFiles, render, renderItem, renderSummary, pump, pending, t, toast, esc, fmt, decode, draw, encode, W, H,
   applyEdit, drawWatermark, processImage, sourceOf, S, pushGenerated, needPdfJs, saveBlob, loadScript, ROOT, base, ext, isHeic, PAGE, celebrate, sortable,
   lang: () => LANG,
   reprocess(it){ if(it.status==='working'){ it.dirty=true; return; } it.status='queued'; it.out=null; it.note=''; if(!pending.includes(it)) pending.push(it); renderItem(it); pump(); } });

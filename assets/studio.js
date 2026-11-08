@@ -29,7 +29,9 @@ en: {
   lk_title:'Password protect PDF', lk_pw:'Password', lk_pw2:'Type it again', lk_show:'Show password', lk_btn:'Lock PDF',
   lk_note:'Anyone opening the PDF will need this password. Keep it safe: it cannot be recovered.', lk_short:'Use at least 4 characters.', lk_match:'The two passwords are different.',
   lk_done:'Locked with a password · AES-256', ul_title:'Remove PDF password', ul_intro:'This PDF is locked. Enter its password to save an unlocked copy you can compress and edit.',
-  ul_btn:'Unlock PDF', ul_wrong:'That password is not correct. Try again.', ul_done:'Unlocked copy added. It is being compressed now.'
+  ul_btn:'Unlock PDF', ul_wrong:'That password is not correct. Try again.', ul_done:'Unlocked copy added. It is being compressed now.',
+  sg_label:'Next step', sg_topdf:'Combine {n} photos into one PDF', sg_kb:'Fit photos under 100 KB', sg_passport:'Make a passport photo', sg_wm:'Add a watermark',
+  sg_merge:'Merge {n} PDFs', sg_lock:'Lock PDF with a password', sg_pages:'Rotate or remove pages', sg_hide:'Hide suggestions'
 },
 ur: {
   close:'بند کریں', cancel:'منسوخ', save:'تبدیلیاں محفوظ کریں', reset:'ری سیٹ', edit_title:'تصویر ایڈٹ کریں', loading:'لوڈ ہو رہا ہے…',
@@ -52,7 +54,9 @@ ur: {
   lk_title:'PDF پر پاس ورڈ لگائیں', lk_pw:'پاس ورڈ', lk_pw2:'دوبارہ لکھیں', lk_show:'پاس ورڈ دکھائیں', lk_btn:'PDF لاک کریں',
   lk_note:'PDF کھولنے کے لیے یہ پاس ورڈ چاہیے ہوگا۔ اسے سنبھال کر رکھیں، یہ واپس نہیں مل سکتا۔', lk_short:'کم از کم 4 حروف استعمال کریں۔', lk_match:'دونوں پاس ورڈ مختلف ہیں۔',
   lk_done:'پاس ورڈ سے لاک · AES-256', ul_title:'PDF کا پاس ورڈ ہٹائیں', ul_intro:'یہ PDF لاک ہے۔ اس کا پاس ورڈ لکھیں تاکہ ان لاک کاپی بن سکے۔',
-  ul_btn:'PDF ان لاک کریں', ul_wrong:'پاس ورڈ درست نہیں۔ دوبارہ کوشش کریں۔', ul_done:'ان لاک کاپی شامل ہو گئی اور کمپریس ہو رہی ہے۔'
+  ul_btn:'PDF ان لاک کریں', ul_wrong:'پاس ورڈ درست نہیں۔ دوبارہ کوشش کریں۔', ul_done:'ان لاک کاپی شامل ہو گئی اور کمپریس ہو رہی ہے۔',
+  sg_label:'اگلا قدم', sg_topdf:'{n} تصاویر سے ایک PDF بنائیں', sg_kb:'تصاویر 100 KB سے کم کریں', sg_passport:'پاسپورٹ تصویر بنائیں', sg_wm:'واٹر مارک لگائیں',
+  sg_merge:'{n} PDF جوڑیں', sg_lock:'PDF پر پاس ورڈ لگائیں', sg_pages:'صفحات گھمائیں یا ہٹائیں', sg_hide:'تجاویز چھپائیں'
 }};
 const tx = (k, v) => { let s = (ST[PP.lang()] || ST.en)[k] || ST.en[k] || k; if (v) for (const n in v) s = s.replace('{' + n + '}', v[n]); return s; };
 
@@ -346,6 +350,7 @@ function saveEditor() {
   if (e.crop && e.crop.x <= .0005 && e.crop.y <= .0005 && e.crop.w >= .999 && e.crop.h >= .999 && !e.passport) delete e.crop;
   if (e.wm && !e.wm.text.trim()) delete e.wm;
   it.edit = e; ed.saved = true;
+  if (e.passport) PP.emit('passport'); if (e.wm && e.wm.text) PP.emit('watermark'); if (e.crop || e.rot || e.flip) PP.emit('photo-edit');
   const wasHold = it.hold; it.hold = false;
   ed.mdl.close();
   PP.reprocess(it);
@@ -410,7 +415,7 @@ function printSheet(it) {
     if (img.close) img.close();
     const blob = await PP.encode(c, 'image/jpeg', .95);
     const paperName = paper === 'a4' ? 'A4' : '4×6 inch (10×15 cm)';
-    PP.pushGenerated(blob, `${PP.base(it.file.name)}-print-${paper}.jpg`, tx('sheet_note', { n: L.n, paper: paperName }), it.out.blob.size, 'img');
+    PP.emit('sheet'); PP.pushGenerated(blob, `${PP.base(it.file.name)}-print-${paper}.jpg`, tx('sheet_note', { n: L.n, paper: paperName }), it.out.blob.size, 'img');
     mdl.close();
   });
 }
@@ -460,7 +465,7 @@ async function openPages(it) {
   $('[data-savepdf]', mdl.foot).addEventListener('click', async ev => {
     const list = order(); if (!list.length) { PP.toast(tx('pg_none')); return; }
     ev.target.disabled = true;
-    try { const b = await build(list); PP.pushGenerated(new Blob([b], { type: 'application/pdf' }), PP.base(it.file.name) + '-organized.pdf', tx('pg_saved', { n: list.length }), it.file.size); mdl.close(); }
+    try { const b = await build(list); PP.emit('pages'); PP.pushGenerated(new Blob([b], { type: 'application/pdf' }), PP.base(it.file.name) + '-organized.pdf', tx('pg_saved', { n: list.length }), it.file.size); mdl.close(); }
     catch (e) { console.error(e); PP.toast(e.message || String(e)); ev.target.disabled = false; }
   });
   $('[data-split]', mdl.foot).addEventListener('click', async ev => {
@@ -470,7 +475,7 @@ async function openPages(it) {
       const z = new JSZip(), pad = String(N).length;
       for (const s of list) z.file(`${PP.base(it.file.name)}-page-${String(s.i + 1).padStart(pad, '0')}.pdf`, await build([s]));
       const blob = await z.generateAsync({ type: 'blob', compression: 'STORE' });
-      PP.pushGenerated(blob, PP.base(it.file.name) + '-pages.zip', tx('pg_split_note', { n: list.length }), it.file.size, 'other'); mdl.close();
+      PP.emit('pages'); PP.pushGenerated(blob, PP.base(it.file.name) + '-pages.zip', tx('pg_split_note', { n: list.length }), it.file.size, 'other'); mdl.close();
     } catch (e) { console.error(e); PP.toast(e.message || String(e)); ev.target.disabled = false; }
   });
 }
@@ -496,7 +501,7 @@ async function openLock(it) {
       try {
         const doc = await PDFLib.PDFDocument.load(bytes.slice(0), { password: pw });
         const out = await doc.save({ useObjectStreams: true });
-        mdl.close(); PP.addFiles([new File([out], name + '-unlocked.pdf', { type: 'application/pdf' })]); PP.toast(tx('ul_done'));
+        mdl.close(); PP.emit('unlock'); PP.addFiles([new File([out], name + '-unlocked.pdf', { type: 'application/pdf' })]); PP.toast(tx('ul_done'));
       } catch (e) { err.hidden = false; err.textContent = tx('ul_wrong'); }
     };
     $('[data-go]', mdl.foot).addEventListener('click', go);
@@ -518,7 +523,7 @@ async function openLock(it) {
       const doc = await PDFLib.PDFDocument.load(bytes.slice(0), { ignoreEncryption: true });
       doc.encrypt({ userPassword: a, ownerPassword: a, permissions: { printing: 'highResolution', modifying: true, copying: true, annotating: true, fillingForms: true, contentAccessibility: true, documentAssembly: true } });
       const out = await doc.save({ useObjectStreams: false });
-      mdl.close(); PP.pushGenerated(new Blob([out], { type: 'application/pdf' }), name + '-locked.pdf', tx('lk_done'), srcBlob.size);
+      mdl.close(); PP.emit('lock'); PP.pushGenerated(new Blob([out], { type: 'application/pdf' }), name + '-locked.pdf', tx('lk_done'), srcBlob.size);
     } catch (e) { console.error(e); err.hidden = false; err.textContent = e.message || String(e); }
   };
   $('[data-go]', mdl.foot).addEventListener('click', go);
@@ -548,5 +553,51 @@ PP.onAdded = added => {
     else if (mode === 'lock') openLock(list[0]);
   }, 250);
 };
-Object.assign(PP, { openEditor, openPages, openLock, printSheet });
+/* =====================================================================
+   Smart next-step suggestions
+   ===================================================================== */
+const SG_ICON = {
+  topdf: '<rect x="3" y="5" width="12" height="10" rx="2"/><path d="m3 13 4-4 4 4"/><path d="M15 9h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2"/>',
+  kb: '<path d="M12 14l4-4"/><path d="M3.3 17a10 10 0 1 1 17.4 0"/>',
+  passport: '<rect x="4" y="3" width="16" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 19c1-3 3-4 5-4s4 1 5 4"/>',
+  wm: '<path d="M5 21h14"/><path d="M6 17h12v-3a2 2 0 0 0-2-2h-2.5l.8-4.2A3 3 0 1 0 9.7 7.8l.8 4.2H8a2 2 0 0 0-2 2z"/>',
+  merge: '<rect x="3" y="3" width="8" height="10" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/><path d="M11 8h4a2 2 0 0 1 2 2v1"/>',
+  lock: '<rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  pages: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'
+};
+const sgUsed = new Set(); let sgHidden = false;
+function renderSuggest() {
+  const box = $('#suggest'); if (!box) return;
+  const its = PP.items.filter(i => !i.example && !i.generated), imgs = its.filter(i => i.kind === 'img'), pdfs = its.filter(i => i.kind === 'pdf');
+  const list = [];
+  if (imgs.length >= 2) list.push(['topdf', 'topdf', tx('sg_topdf', { n: imgs.length })]);
+  if (imgs.length && !PP.S().target) list.push(['kb', 'kb', tx('sg_kb')]);
+  if (imgs.length && PP.PAGE.autoOpen !== 'passport') list.push(['passport', 'passport', tx('sg_passport')]);
+  if (imgs.length) list.push(['wm', 'wm', tx('sg_wm')]);
+  if (pdfs.length >= 2) list.push(['merge', 'merge', tx('sg_merge', { n: pdfs.length })]);
+  if (pdfs.length) { list.push(['lock', 'lock', tx('sg_lock')]); list.push(['pages', 'pages', tx('sg_pages')]); }
+  const show = list.filter(x => !sgUsed.has(x[0])).slice(0, 4);
+  box.hidden = sgHidden || !show.length; if (box.hidden) return;
+  box.innerHTML = `<span class="sg-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>${esc(tx('sg_label'))}</span>` +
+    show.map(([k, ic, label], n) => `<button type="button" class="sg" data-sg="${k}" style="--n:${n}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SG_ICON[ic]}</svg>${esc(label)}</button>`).join('') +
+    `<button type="button" class="sg-x" data-sg-hide aria-label="${esc(tx('sg_hide'))}" title="${esc(tx('sg_hide'))}">✕</button>`;
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-sg-hide]')) { sgHidden = true; renderSuggest(); return; }
+  const b = e.target.closest('[data-sg]'); if (!b) return;
+  const k = b.dataset.sg, its = PP.items.filter(i => !i.example && !i.generated), img = its.find(i => i.kind === 'img'), pdf = its.find(i => i.kind === 'pdf');
+  sgUsed.add(k); renderSuggest();
+  if (k === 'topdf') $('#toPdf').click();
+  else if (k === 'kb') { const c = $('#limitChips [data-kb="100"]'); if (c) c.click(); }
+  else if (k === 'passport' && img) openEditor(img, { passport: true });
+  else if (k === 'wm' && img) openEditor(img).then(() => { if (ed) { const w = $('.ed-wm', ed.mdl.body); if (w) { w.focus(); w.scrollIntoView({ block: 'center' }); } } });
+  else if (k === 'merge') $('#mergePdf').click();
+  else if (k === 'lock' && pdf) openLock(pdf);
+  else if (k === 'pages' && pdf) openPages(pdf);
+});
+const baseOnAdded = PP.onAdded;
+PP.onAdded = added => { if (added.some(i => !i.example)) { sgHidden = false; } baseOnAdded(added); setTimeout(renderSuggest, 0); };
+(window.PPBus || document).addEventListener('batch-done', renderSuggest);
+
+Object.assign(PP, { openEditor, openPages, openLock, printSheet, renderSuggest });
 })();
