@@ -169,27 +169,44 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .quick-tools a:hover{transform:translateY(-2px);border-color:var(--accent-hi);box-shadow:var(--shadow)}
 .quick-tools a:hover .ic{transform:rotate(-10deg) scale(1.15)}
 
-/* press animation in the drop zone */
-.press{position:relative;display:block;width:140px;height:116px;margin-bottom:2px;transform:scale(1.12);transform-origin:50% 100%}
-.press svg{width:140px;height:110px;overflow:visible}
-.p-rod{fill:var(--line-2)}
-.p-plate rect{fill:var(--ink)}
-.p-base{fill:var(--line-2)}
-.p-doc rect:first-child{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2.5}
-.p-fold{fill:var(--accent);opacity:.25}
-.p-line{fill:var(--accent);opacity:.55}
-.p-plate,.p-rod{animation:plate 3.4s var(--ease) infinite}
-.p-doc{transform-origin:70px 96px;animation:squash 3.4s var(--ease) infinite}
-.p-size{position:absolute;right:-30px;top:4px;font-family:var(--f-mono);font-size:12px;font-weight:600}
-[dir="rtl"] .p-size{right:auto;left:-30px}
-.p-size b{position:absolute;right:0;top:0;white-space:nowrap;padding:3px 8px;border-radius:8px}
-.p-from{background:var(--sunk);color:var(--muted);animation:sizeFrom 3.4s infinite}
+/* press animation in the drop zone: a small steel press squeezing a file */
+.press{position:relative;display:block;width:200px;height:150px;margin-top:-4px;
+  --st1:#FFFFFF;--st2:#D3DAE5;--st3:#94A0B3;--st4:#5B6779;--paper:#FFFFFF;--paper-line:#CDD5E1;--corner:#E2E8F1;
+  --sk1:#7DB9FF;--sk2:#DCEBFF;--mtn:#1D5BD8;--mtn2:#7FB2F5;--sun:#FFCF5A;--ground:rgba(16,24,40,.24)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .press{--st1:#EEF2F7;--st2:#AEB8C7;--st3:#6D798B;--st4:#384151;--paper:#F4F7FB;--paper-line:#C3CCD9;--corner:#D2D9E4;--ground:rgba(0,0,0,.6)}}
+:root[data-theme="dark"] .press{--st1:#EEF2F7;--st2:#AEB8C7;--st3:#6D798B;--st4:#384151;--paper:#F4F7FB;--paper-line:#C3CCD9;--corner:#D2D9E4;--ground:rgba(0,0,0,.6)}
+.press svg{display:block;width:200px;height:150px;overflow:visible}
+.press .st1{stop-color:var(--st1)}.press .st2{stop-color:var(--st2)}.press .st3{stop-color:var(--st3)}.press .st4{stop-color:var(--st4)}
+.press .sk1{stop-color:var(--sk1)}.press .sk2{stop-color:var(--sk2)}
+.p-ground,.p-dshadow{fill:var(--ground)}
+.p-bolt{fill:var(--st3);stroke:var(--st1);stroke-width:1.1}
+.p-edge{fill:var(--st4);opacity:.35}
+.p-accent{fill:var(--accent)}
+.p-pad{fill:var(--st4);opacity:.75}
+.p-paper{fill:var(--paper)}
+.p-corner{fill:var(--corner)}
+.p-line{fill:var(--paper-line)}
+.p-mtn{fill:var(--mtn)}
+.p-mtn2{fill:var(--mtn2)}
+.p-sun{fill:var(--sun)}
+.p-burst path{stroke:var(--accent-hi);stroke-width:2.4;stroke-linecap:round;fill:none}
+.p-ram{animation:ram 3.4s var(--ease) infinite}
+.p-doc{transform-origin:100px 120px;animation:squash 3.4s var(--ease) infinite}
+.p-dshadow{transform-origin:100px 120px;animation:dshadow 3.4s var(--ease) infinite}
+.p-burst{opacity:0;transform-origin:100px 104px;animation:burst 3.4s ease-out infinite}
+.p-size{position:absolute;right:-26px;top:-4px;font-family:var(--f-mono);font-size:12px;font-weight:600;direction:ltr}
+[dir="rtl"] .p-size{right:auto;left:-26px}
+.p-size b{position:absolute;right:0;top:0;white-space:nowrap;padding:3px 8px;border-radius:8px;box-shadow:var(--shadow-sm)}
+[dir="rtl"] .p-size b{right:auto;left:0}
+.p-from{background:var(--surface);color:var(--muted);border:1px solid var(--line);animation:sizeFrom 3.4s infinite}
 .p-to{background:var(--good-soft);color:var(--good);animation:sizeTo 3.4s infinite}
-@keyframes plate{0%,18%{transform:translateY(0)}38%,58%{transform:translateY(20px)}76%,100%{transform:translateY(0)}}
-@keyframes squash{0%,18%{transform:scale(1,1)}38%,58%{transform:scale(1.06,.7)}76%,100%{transform:scale(1,1)}}
+@keyframes ram{0%,18%{transform:translateY(0)}38%,58%{transform:translateY(17px)}76%,100%{transform:translateY(0)}}
+@keyframes squash{0%,18%{transform:scale(1,1)}38%,58%{transform:scale(1.07,.75)}76%{transform:scale(1,1)}83%{transform:scale(.98,1.03)}90%,100%{transform:scale(1,1)}}
+@keyframes dshadow{0%,18%{transform:scaleX(1);opacity:1}38%,58%{transform:scaleX(1.14);opacity:1}76%,100%{transform:scaleX(1);opacity:1}}
+@keyframes burst{0%,35%{opacity:0;transform:scaleX(.7)}41%{opacity:1;transform:scaleX(1)}54%,100%{opacity:0;transform:scaleX(1.25)}}
 @keyframes sizeFrom{0%,30%{opacity:1;transform:none}40%,88%{opacity:0;transform:translateY(-6px)}100%{opacity:1}}
 @keyframes sizeTo{0%,34%{opacity:0;transform:translateY(6px) scale(.9)}44%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
-.drop.over .p-plate,.drop.over .p-rod,.drop.over .p-doc,.drop.over .p-from,.drop.over .p-to{animation-duration:1.2s}
+.drop.over .p-ram,.drop.over .p-doc,.drop.over .p-dshadow,.drop.over .p-burst,.drop.over .p-from,.drop.over .p-to{animation-duration:1.2s}
 
 /* ---------- workspace ---------- */
 .workspace{padding-block:8px 48px;scroll-margin-top:76px}
